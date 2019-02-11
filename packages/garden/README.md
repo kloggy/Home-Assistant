@@ -13,3 +13,7 @@ __Disclaimer__ - This was the first thing I wrote for HA (apart from the obligat
 
 Any feedback including constructive criticism is very welcome and I'm particuarly interested if you have any ideas for improving the weather calcualtions.
 
+<h1>Here is how it looks in Lovelace</h1> 
+
+<h2>The Master control Switch OFF hides all other UI elements </h2>
+<img src="https://github.com/kloggy/Home-Assistant/blob/master/packages/garden/Screenshots/MasterControlSwitch.png"/>
