@@ -19,3 +19,15 @@ Any feedback including constructive criticism is very welcome and I'm particuarl
 __The Master control Switch OFF hides all other UI elements__
 
 <img src="https://github.com/kloggy/Home-Assistant/blob/master/packages/garden/Screenshots/MasterControlSwitch.png">
+
+__The Morning Cycle showing the Schedule__
+
+<img src="https://github.com/kloggy/Home-Assistant/blob/master/packages/garden/Screenshots/MorningCycleWithSchedule.png">
+
+__The Morning Cycle showing the Weather Adjustments
+
+<img src="https://github.com/kloggy/Home-Assistant/blob/master/packages/garden/Screenshots/MorningCycleWithWeatherAdjustments.png">
+
+__Showing the Irrigation History
+
+<img src="https://github.com/kloggy/Home-Assistant/blob/master/packages/garden/Screenshots/IrrigationHistory.png">
