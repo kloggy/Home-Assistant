@@ -1,0 +1,188 @@
+#============================================================================
+#=== Not that I don't trust my programming but...
+#===   1. Turn off valves and schedules when master control switch is off
+#===   2. Turn off all valves when HA starts
+#===   3. Don't allow more than one valve on at one time
+#===   4. Turn off valve 1 to 4 if it is on for longer than 30 minutes
+#===      Turn off valve 5 if it is on for longer than 59 minutes
+#=== Better safe than sorry!
+#============================================================================
+
+#================
+#=== Automations
+#================
+automation:
+
+  #====================================================================
+  #=== Master Control Switch
+  #=== Turn off valves and schedules when master control switch is off
+  #====================================================================
+  - alias: Irrigation Failsafe - master control switch
+    initial_state: on
+    trigger:
+    - platform: state
+      entity_id: input_boolean.irrigation_master_control_switch
+      to: 'off'
+
+    - platform: homeassistant
+      event: start
+
+    action:
+    - service: homeassistant.turn_off
+      entity_id:
+        - input_boolean.cycle1_enable
+        - input_boolean.cycle2_enable
+        - input_boolean.cycle1_manual_run
+        - input_boolean.cycle2_manual_run    
+        - switch.zone1_valve
+        - switch.zone2_valve
+        - switch.zone3_valve
+        - switch.zone4_valve
+        - switch.zone5_valve
+
+
+  #=======================================
+  #=== Home Assistant starts
+  #=== Turn off all valves when HA starts
+  #=======================================
+  - alias: Irrigation Failsafe - HA start
+    initial_state: on
+    trigger:
+    - platform: homeassistant
+      event: start
+
+    action:
+    - service: homeassistant.turn_off
+      entity_id:
+        - switch.zone1_valve
+        - switch.zone2_valve
+        - switch.zone3_valve
+        - switch.zone4_valve
+        - switch.zone5_valve
+
+
+  #==================================================================
+  #=== Don't allow more than one valve on at one time.
+  #=== And
+  #=== Turn off valve 1 to 4 if it is on for longer than 30 minutes.
+  #=== Turn off valve 5 if it is on for longer than 59 minutes.
+  #==================================================================
+  #=== Valve 1 ON
+  - alias: Irrigation Failsafe - Valve 1 on
+    initial_state: on
+    trigger:
+    - platform: state
+      entity_id:
+      - switch.zone1_valve
+      to: 'on'
+
+    action:
+    - service: homeassistant.turn_off
+      entity_id:
+        - switch.zone2_valve
+        - switch.zone3_valve
+        - switch.zone4_valve
+        - switch.zone5_valve
+
+    - wait_template: "{{ is_state('switch.zone1_valve', 'off') }}"
+      timeout: '00:30:15'
+
+    - service: homeassistant.turn_off
+      entity_id: switch.zone1_valve
+
+
+  #=== Valve 2 ON
+  - alias: Irrigation Failsafe - Valve 2 on
+    initial_state: on
+    trigger:
+    - platform: state
+      entity_id:
+      - switch.zone2_valve
+      to: 'on'
+
+    action:
+    - service: homeassistant.turn_off
+      entity_id:
+        - switch.zone1_valve
+        - switch.zone3_valve
+        - switch.zone4_valve
+        - switch.zone5_valve
+
+    - wait_template: "{{ is_state('switch.zone2_valve', 'off') }}"
+      timeout: '00:30:15'
+
+    - service: homeassistant.turn_off
+      entity_id: switch.zone2_valve
+
+
+  #=== Valve 3 ON
+  - alias: Irrigation Failsafe - Valve 3 on
+    initial_state: on
+    trigger:
+    - platform: state
+      entity_id:
+      - switch.zone3_valve
+      to: 'on'
+
+    action:
+    - service: homeassistant.turn_off
+      entity_id:
+        - switch.zone1_valve
+        - switch.zone2_valve
+        - switch.zone4_valve
+        - switch.zone5_valve
+
+    - wait_template: "{{ is_state('switch.zone3_valve', 'off') }}"
+      timeout: '00:30:15'
+
+    - service: homeassistant.turn_off
+      entity_id: switch.zone3_valve
+
+
+  #=== Valve 4 ON
+  - alias: Irrigation Failsafe - Valve 4 on
+    initial_state: on
+    trigger:
+    - platform: state
+      entity_id:
+      - switch.zone4_valve
+      to: 'on'
+
+    action:
+    - service: homeassistant.turn_off
+      entity_id:
+        - switch.zone1_valve
+        - switch.zone2_valve
+        - switch.zone3_valve
+        - switch.zone5_valve
+
+    - wait_template: "{{ is_state('switch.zone4_valve', 'off') }}"
+      timeout: '00:30:15'
+
+    - service: homeassistant.turn_off
+      entity_id: switch.zone4_valve
+
+
+  #=== Valve 5 ON
+  - alias: Irrigation Failsafe - Valve 5 on
+    initial_state: on
+    trigger:
+    - platform: state
+      entity_id:
+      - switch.zone5_valve
+      to: 'on'
+
+    action:
+    - service: homeassistant.turn_off
+      entity_id:
+        - switch.zone1_valve
+        - switch.zone2_valve
+        - switch.zone3_valve
+        - switch.zone4_valve
+
+    - wait_template: "{{ is_state('switch.zone5_valve', 'off') }}"
+      timeout: '00:59:15'
+
+    - service: homeassistant.turn_off
+      entity_id: switch.zone5_valve
+

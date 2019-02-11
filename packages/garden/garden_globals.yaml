@@ -1,0 +1,492 @@
+
+#===========
+#=== Groups
+#===========
+group:
+  irrigation_switches:
+    entities:
+      - switch.zone1_valve
+      - switch.zone2_valve
+      - switch.zone3_valve
+      - switch.zone4_valve
+      - switch.zone5_valve
+
+
+#===================
+#=== Input_Booleans
+#===================
+input_boolean:
+
+  irrigation_master_control_switch:
+    name: Master Control Switch
+    icon: mdi:bomb
+
+  cycle1_enable:
+    name: Enable schedule
+    icon: mdi:pipe
+    
+  cycle2_enable:
+    name: Enable schedule
+    icon: mdi:pipe
+
+  cycle1_enable_saved_state:
+    
+  cycle2_enable_saved_state:
+
+  cycle1_use_weather_adjustment:
+    name: Use weather adjustment
+    icon: mdi:weather-partlycloudy
+
+  cycle2_use_weather_adjustment:
+    name: Use weather adjustment
+    icon: mdi:weather-partlycloudy
+
+  cycle1_manual_run:
+    name: Run morning cycle now
+    icon: mdi:arrow-right-drop-circle
+
+  cycle2_manual_run:
+    name: Run afternoon cycle now
+    icon: mdi:arrow-right-drop-circle
+
+  cycle1_running:
+    name: Cycle 1 running
+
+  cycle2_running:
+    name: Cycle 2 running
+
+
+#================
+#=== Input_Texts
+#================
+input_text:
+  cycle1_current_zone:
+    name: Cycle 1 current zone
+
+  cycle2_current_zone:
+    name: Cycle 2 current zone
+
+
+#==================
+#=== Input_Selects
+#==================
+input_select:
+
+  cycle1_watering_days:
+    name: Morning cycle watering days
+    options:
+      - 'Daily'
+      - 'Alternate'
+      - 'Once'
+    icon: mdi:calendar
+
+  cycle2_watering_days:
+    name: Afternoon cycle watering days
+    options:
+      - 'Daily'
+      - 'Alternate'
+      - 'Once'
+    icon: mdi:calendar
+
+  cycle1_schedule_time:
+    name: Morning cycle schedule start time
+    options:
+      - '08:00'
+      - '09:00'
+      - '10:00'
+      - '11:00'
+      - '12:00'
+    icon: mdi:alarm
+
+  cycle2_schedule_time:
+    name: Afternoon cycle schedule start time
+    options:
+      - '16:00'
+      - '17:00'
+      - '18:00'
+      - '19:00'
+      - '20:00'
+    icon: mdi:alarm
+
+
+#====================
+#=== Input_Datetimes
+#====================
+input_datetime:
+  cycle1_next_run_time:
+    has_date: true
+    has_time: true
+
+  cycle2_next_run_time:
+    has_date: true
+    has_time: true
+
+  last_irrigated_time:
+    has_date: true
+    has_time: true
+
+
+#==================
+#=== Input_Numbers
+#==================
+input_number:
+
+  # CYCLE 1
+  cycle1_zone1_duration:
+    name: Zone 1 duration
+    min: 0
+    max: 30
+    step: 1
+    icon: mdi:camera-timer
+    unit_of_measurement: mins
+
+  cycle1_zone2_duration:
+    name: Zone 2 duration
+    min: 0
+    max: 30
+    step: 1
+    icon: mdi:camera-timer
+    unit_of_measurement: mins
+
+  cycle1_zone3_duration:
+    name: Zone 3 duration
+    min: 0
+    max: 30
+    step: 1
+    icon: mdi:camera-timer
+    unit_of_measurement: mins
+
+  cycle1_zone4_duration:
+    name: Zone 4 duration
+    min: 0
+    max: 30
+    step: 1
+    icon: mdi:camera-timer
+    unit_of_measurement: mins
+
+  cycle1_zone5_duration:
+    name: Zone 5 duration
+    min: 0
+    max: 59
+    step: 1
+    icon: mdi:camera-timer
+    unit_of_measurement: mins
+
+  # CYCLE 2
+  cycle2_zone1_duration:
+    name: Zone 1 duration
+    min: 0
+    max: 30
+    step: 1
+    icon: mdi:camera-timer
+    unit_of_measurement: mins
+
+  cycle2_zone2_duration:
+    name: Zone 2 duration
+    min: 0
+    max: 30
+    step: 1
+    icon: mdi:camera-timer  
+    unit_of_measurement: mins
+
+  cycle2_zone3_duration:
+    name: Zone 3 duration
+    min: 0
+    max: 30
+    step: 1
+    icon: mdi:camera-timer
+    unit_of_measurement: mins
+
+  cycle2_zone4_duration:
+    name: Zone 4 duration
+    min: 0
+    max: 30
+    step: 1
+    icon: mdi:camera-timer  
+    unit_of_measurement: mins
+
+  cycle2_zone5_duration:
+    name: Zone 5 duration
+    min: 0
+    max: 59
+    step: 1
+    icon: mdi:camera-timer  
+    unit_of_measurement: mins
+
+  # The temperature above or below which the duration is adjusted
+  temperature_baseline:
+    name: Temperature baseline
+    min: 20
+    max: 30
+    icon: mdi:thermometer
+    unit_of_measurement: '°C'
+
+  # How much rain is needed before the duration is reduced
+  rainfall_threshold:
+    name: Rainfall threshold
+    min: 5
+    max: 30
+    icon: mdi:weather-rainy
+    unit_of_measurement: 'mm'
+
+  # Adjusted duration times can be extreme during calculations
+  # depending on weather conditions so min and max are set high
+  adjusted_cycle1_zone1_duration:
+    name: Adjusted cycle1 zone1 duration
+    min: -60
+    max: 60
+
+  adjusted_cycle1_zone2_duration:
+    name: Adjusted cycle1 zone2 duration
+    min: -60
+    max: 60
+
+  adjusted_cycle1_zone3_duration:
+    name: Adjusted cycle1 zone3 duration
+    min: -60
+    max: 60
+
+  adjusted_cycle1_zone4_duration:
+    name: Adjusted cycle1 zone4 duration
+    min: -60
+    max: 60
+
+  adjusted_cycle1_zone5_duration:
+    name: Adjusted cycle1 zone5 duration
+    min: -60
+    max: 120
+
+  adjusted_cycle2_zone1_duration:
+    name: Adjusted cycle1 zone1 duration
+    min: -60
+    max: 60
+
+  adjusted_cycle2_zone2_duration:
+    name: Adjusted cycle1 zone2 duration
+    min: -60
+    max: 60
+
+  adjusted_cycle2_zone3_duration:
+    name: Adjusted cycle1 zone3 duration
+    min: -60
+    max: 60
+
+  adjusted_cycle2_zone4_duration:
+    name: Adjusted cycle1 zone4 duration
+    min: -60
+    max: 60
+
+  adjusted_cycle2_zone5_duration:
+    name: Adjusted cycle1 zone5 duration
+    min: -60
+    max: 120
+
+ 
+#===========
+#=== timers
+#===========
+timer:
+  cycle1_zone_duration:
+    name: Time remaining
+
+  cycle2_zone_duration:
+    name: Time remaining
+
+
+#============
+#=== Sensors
+#============
+sensor:
+  - platform: template
+    sensors:
+
+      cycle1_next_run_time:
+        friendly_name: "Next scheduled run time"
+        value_template: >
+          {% if is_state('input_boolean.cycle1_enable', 'on') %}
+            {{ state_attr('input_datetime.cycle1_next_run_time', 'timestamp') | timestamp_custom("%a %d %h at %H:%M") }}
+          {% else %}
+            None
+          {% endif %}
+
+      cycle2_next_run_time:
+        friendly_name: "Next scheduled run time"
+        value_template: >
+          {% if is_state('input_boolean.cycle2_enable', 'on') %}
+            {{ state_attr('input_datetime.cycle2_next_run_time', 'timestamp') | timestamp_custom("%a %d %h at %H:%M") }}
+          {% else %}
+            None
+          {% endif %}
+
+      cycle1_running:
+        friendly_name: "Morning cycle"
+        value_template: >
+          {% if is_state('input_boolean.cycle1_running', 'on') %}
+            Running
+          {% else %}
+            Not running
+          {% endif %}     
+        icon_template: >
+          {% if is_state('input_boolean.cycle1_running', 'on') %}
+            mdi:run
+          {% else %}
+            mdi:human-handsdown
+          {% endif %}     
+          
+      cycle2_running:
+        friendly_name: "Afternoon cycle"
+        value_template: >
+          {% if is_state('input_boolean.cycle2_running', 'on') %}
+            Running
+          {% else %}
+            Not running
+          {% endif %}     
+        icon_template: >
+          {% if is_state('input_boolean.cycle2_running', 'on') %}
+            mdi:run
+          {% else %}
+            mdi:human-handsdown
+          {% endif %}     
+
+      cycle1_zone_being_watered:
+        friendly_name: "Zone being watered"
+        value_template: "{{ states('input_text.cycle1_current_zone') }}"     
+        
+      cycle2_zone_being_watered:
+        friendly_name: "Zone being watered"
+        value_template: "{{ states('input_text.cycle2_current_zone') }}"     
+
+      last_irrigated_time:
+        friendly_name: "Last irrigation cycle ended"
+        value_template: >
+          {{ (as_timestamp(states.input_datetime.last_irrigated_time.state)) | timestamp_custom("%a %d %h at %H:%M") }}
+        
+      # Zone Times - templated on history_stats sensors
+      zone1_time_today:
+        friendly_name: Zone 1 total watering time today
+        value_template: >
+          {% set duration = states('sensor.zone1_time') %}
+          {{ duration|float|multiply(60)|round }}
+        unit_of_measurement: mins
+
+      zone2_time_today:
+        friendly_name: Zone 2 total watering time today
+        value_template: >
+          {% set duration = states('sensor.zone2_time') %}
+          {{ duration|float|multiply(60)|round }}
+        unit_of_measurement: mins
+        
+      zone3_time_today:
+        friendly_name: Zone 3 total watering time today
+        value_template: >
+          {% set duration = states('sensor.zone3_time') %}
+          {{ duration|float|multiply(60)|round }}
+        unit_of_measurement: mins
+        
+      zone4_time_today:
+        friendly_name: Zone 4 total watering time today
+        value_template: >
+          {% set duration = states('sensor.zone4_time') %}
+          {{ duration|float|multiply(60)|round }}
+        unit_of_measurement: mins
+        
+      zone5_time_today:
+        friendly_name: Zone 5 total watering time today
+        value_template: >
+          {% set duration = states('sensor.zone5_time') %}
+          {{ duration|float|multiply(60)|round }}
+        unit_of_measurement: mins
+        
+
+      cycle1_zone1_duration_adjusted:
+        friendly_name: "Zone 1 adjusted duration"
+        value_template: "{{ states('input_number.adjusted_cycle1_zone1_duration') | int }}"     
+        unit_of_measurement: mins
+
+      cycle1_zone2_duration_adjusted:
+        friendly_name: "Zone 2 adjusted duration"
+        value_template: "{{ states('input_number.adjusted_cycle1_zone2_duration') | int }}"     
+        unit_of_measurement: mins
+
+      cycle1_zone3_duration_adjusted:
+        friendly_name: "Zone 3 adjusted duration"
+        value_template: "{{ states('input_number.adjusted_cycle1_zone3_duration') | int }}"     
+        unit_of_measurement: mins
+
+      cycle1_zone4_duration_adjusted:
+        friendly_name: "Zone 4 adjusted duration"
+        value_template: "{{ states('input_number.adjusted_cycle1_zone4_duration') | int }}"     
+        unit_of_measurement: mins
+
+      cycle1_zone5_duration_adjusted:
+        friendly_name: "Zone 5 adjusted duration"
+        value_template: "{{ states('input_number.adjusted_cycle1_zone5_duration') | int }}"     
+        unit_of_measurement: mins
+
+      cycle2_zone1_duration_adjusted:
+        friendly_name: "Zone 1 adjusted duration"
+        value_template: "{{ states('input_number.adjusted_cycle2_zone1_duration') | int }}"     
+        unit_of_measurement: mins
+
+      cycle2_zone2_duration_adjusted:
+        friendly_name: "Zone 2 adjusted duration"
+        value_template: "{{ states('input_number.adjusted_cycle2_zone2_duration') | int }}"     
+        unit_of_measurement: mins
+
+      cycle2_zone3_duration_adjusted:
+        friendly_name: "Zone 3 adjusted duration"
+        value_template: "{{ states('input_number.adjusted_cycle2_zone3_duration') | int }}"     
+        unit_of_measurement: mins
+
+      cycle2_zone4_duration_adjusted:
+        friendly_name: "Zone 4 adjusted duration"
+        value_template: "{{ states('input_number.adjusted_cycle2_zone4_duration') | int }}"     
+        unit_of_measurement: mins
+
+      cycle2_zone5_duration_adjusted:
+        friendly_name: "Zone 5 adjusted duration"
+        value_template: "{{ states('input_number.adjusted_cycle2_zone5_duration') | int }}"     
+        unit_of_measurement: mins
+
+  # History sensors
+  # Zone Times
+  - platform: history_stats
+    name: zone1_time
+    entity_id: switch.zone1_valve
+    state: 'on'
+    type: time
+    start: '{{ now().replace(hour=0).replace(minute=0).replace(second=0) }}'
+    end: '{{ now() }}'
+
+  - platform: history_stats
+    name: zone2_time
+    entity_id: switch.zone2_valve
+    state: 'on'
+    type: time
+    start: '{{ now().replace(hour=0).replace(minute=0).replace(second=0) }}'
+    end: '{{ now() }}'
+
+  - platform: history_stats
+    name: zone3_time
+    entity_id: switch.zone3_valve
+    state: 'on'
+    type: time
+    start: '{{ now().replace(hour=0).replace(minute=0).replace(second=0) }}'
+    end: '{{ now() }}'
+
+  - platform: history_stats
+    name: zone4_time
+    entity_id: switch.zone4_valve
+    state: 'on'
+    type: time
+    start: '{{ now().replace(hour=0).replace(minute=0).replace(second=0) }}'
+    end: '{{ now() }}'
+
+  - platform: history_stats
+    name: zone5_time
+    entity_id: switch.zone5_valve
+    state: 'on'
+    type: time
+    start: '{{ now().replace(hour=0).replace(minute=0).replace(second=0) }}'
+    end: '{{ now() }}'
+
