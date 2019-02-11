@@ -9,9 +9,11 @@ The system as I have it implemented is based around Sonoffs controlling the valv
 
 The weather calculation sections are experimental and I have never actually relied on them. 
 
+__Note -__ A few extra features here such as Amazon Dash button control and notifications depend on other parts of my configuration so you will have to either remove those sections or adapt them to suit you.
+
 __Disclaimer__ - This was the first thing I wrote for HA (apart from the obligatory 'light-on-when-it-is-dark-automation' that everyone does) so I *know* that there are things I could have done better / more elegently. I might one day get round to improving the code but it worked flawlessly all through the summer of 2018 and I don't want to break it!
 
-Any feedback including constructive criticism is very welcome and I'm particuarly interested if you have any ideas for improving the weather calcualtions.
+*Any feedback including constructive criticism is very welcome and I'm particuarly interested if you have any ideas for improving the weather calcualtions.*
 
 <h1>Here is how it looks in Lovelace</h1> 
 
