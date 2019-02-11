@@ -3,7 +3,7 @@
 
 <h2>Background</h2>
 
-This package is a completely self contained* system for Home Assistant that has been written to control five different irrigation zones over two cylces per day.  I have tried to write it in such a way that there is as little code replication as possible which means that if you want a different number of zones then you more or less have to just add more (or remove) some  ```input_boolean / number / datetime / select```s and the logic largely takes care of it. There are a couple of automations that will also need to be replicated but I think (hope) it should be self explanatory.
+This package is a completely self contained* system for Home Assistant that has been written to control five different irrigation zones over two cylces per day.  I have tried to write it in such a way that there is as little code replication as possible which means that if you want a different number of zones then you more or less have to just add more (or remove) some  ```input_boolean / number / datetime / select```s and the code largely takes care of it. There are a couple of automations that will also need to be replicated but I think (hope) it should be self explanatory.
 
 The system as I have it implemented is based around Sonoffs controlling the valves but that should be irrelevant.
 
