@@ -1,4 +1,4 @@
-<h1 align="center">Garden Irrigation System for Home Assistant</h1>
+<h1 align="center">A Garden Irrigation System for Home Assistant</h1>
 
 
 <h2>Background</h2>
