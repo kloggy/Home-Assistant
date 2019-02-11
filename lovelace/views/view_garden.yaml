@@ -1,0 +1,286 @@
+#================================
+#===
+#=== GARDEN
+#===
+#================================
+title: Garden
+icon: mdi:flower
+cards:
+
+  - type: custom:compact-custom-header
+
+  #==========================
+  #=== Master Control Switch
+  #==========================
+  - type: vertical-stack
+    cards:
+
+      - type: custom:card-modder
+        style:
+          border-radius: 20px
+          overflow: hidden
+          box-shadow: '2px 2px rgba(0,0,0,0.4)'
+          border: 'solid 1px rgba(100,100,100,0.3)'
+        card:
+          type: picture-entity
+          entity: input_boolean.irrigation_master_control_switch
+          image: /local/lovelace/lawn-sprinkler.jpg
+          tap_action: 
+            action: toggle
+
+      - type: conditional
+        conditions:
+          - entity: input_boolean.irrigation_master_control_switch
+            state: 'on'
+        card:
+          type: vertical-stack
+          cards:
+
+            #=== Manual control buttons
+            - type: horizontal-stack
+              cards:
+                - type: custom:card-modder
+                  style:
+                    border-radius: 20px
+                    overflow: hidden
+                    box-shadow: '2px 2px rgba(0,0,0,0.4)'
+                    border: 'solid 1px rgba(100,100,100,0.3)'
+                  card:
+                    type: entity-button
+                    entity: input_boolean.cycle1_manual_run
+                    name: Morning Cycle
+                    tap_action:
+                      action: toggle
+
+                - type: custom:card-modder
+                  style:
+                    border-radius: 20px
+                    overflow: hidden
+                    box-shadow: '2px 2px rgba(0,0,0,0.4)'
+                    border: 'solid 1px rgba(100,100,100,0.3)'
+                  card:
+                    type: entity-button
+                    entity: input_boolean.cycle2_manual_run
+                    name: Afternoon Cycle
+                    tap_action:
+                      action: toggle
+
+            #=== Valve information
+            - type: custom:card-modder
+              style:
+                border-radius: 20px
+                overflow: hidden
+                box-shadow: '2px 2px rgba(0,0,0,0.4)'
+                border: 'solid 1px rgba(100,100,100,0.3)'
+              card:
+                type: glance
+                entities:
+                  - switch.zone1_valve
+                  - switch.zone2_valve
+                  - switch.zone3_valve
+                  - switch.zone4_valve
+                  - switch.zone5_valve
+
+            #=== Temperature and Rainfall
+            - type: custom:card-modder
+              style:
+                border-radius: 20px
+                overflow: hidden
+                box-shadow: '2px 2px rgba(0,0,0,0.4)'
+                border: 'solid 1px rgba(100,100,100,0.3)'
+              card:
+                type: entities
+                title: Temperature and Rainfall
+                show_header_toggle: false
+                entities:
+                  - input_number.temperature_baseline
+                  - input_number.rainfall_threshold
+                  - type: custom:fold-entity-row
+                    head: 
+                      type: section
+                      label: History
+                    items:
+                      - type: section
+                        label: Temperature
+
+                      - entity: sensor.temp_high_2days
+                        icon: mdi:thermometer
+                      - entity: sensor.temp_high_5days
+                        icon: mdi:thermometer
+
+                      - type: divider
+                        style:
+                          height: 15px
+
+                      - entity: sensor.temp_minus0
+                        icon: mdi:thermometer
+                      - entity: sensor.temp_minus1
+                        icon: mdi:thermometer
+                      - entity: sensor.temp_minus2
+                        icon: mdi:thermometer
+                      - entity: sensor.temp_minus3
+                        icon: mdi:thermometer
+                      - entity: sensor.temp_minus4
+                        icon: mdi:thermometer
+
+                      - type: section
+                        label: Rainfall
+
+                      - entity: sensor.rain_3days_ratio
+                        icon: mdi:weather-rainy
+
+                      - type: divider
+                        style:
+                          height: 15px
+
+                      - entity: sensor.rain_minus0
+                        icon: mdi:weather-rainy
+                      - entity: sensor.rain_minus1
+                        icon: mdi:weather-rainy
+                      - entity: sensor.rain_minus2
+                        icon: mdi:weather-rainy
+                      - entity: sensor.rain_minus3
+                        icon: mdi:weather-rainy
+
+            #=== Irrigation History
+            - type: custom:card-modder
+              style:
+                border-radius: 20px
+                overflow: hidden
+                box-shadow: '2px 2px rgba(0,0,0,0.4)'
+                border: 'solid 1px rgba(100,100,100,0.3)'
+              card:
+                type: entities
+                title: Irrigation History
+                show_header_toggle: false
+                entities:
+                  - type: custom:fold-entity-row
+                    head: 
+                      entity: sensor.last_irrigated_time
+                      icon: mdi:update
+                    items:
+                      - entity: sensor.zone1_time_today
+                        icon: mdi:water
+                      - entity: sensor.zone2_time_today
+                        icon: mdi:water
+                      - entity: sensor.zone3_time_today
+                        icon: mdi:water
+                      - entity: sensor.zone4_time_today
+                        icon: mdi:water
+                      - entity: sensor.zone5_time_today
+                        icon: mdi:water
+
+  #==================
+  #=== Morning Cycle
+  #==================
+  - type: conditional
+    conditions:
+      - entity: input_boolean.irrigation_master_control_switch
+        state: 'on'
+    card:
+      type: custom:card-modder
+      style:
+        border-radius: 20px
+        overflow: hidden
+        box-shadow: '2px 2px rgba(0,0,0,0.4)'
+        border: 'solid 1px rgba(100,100,100,0.3)'
+      card:
+
+        #=== Morning Cycle details
+        type: entities
+        title: Morning Cycle
+        show_header_toggle: false
+        entities:
+          - sensor.cycle1_running
+          - entity: sensor.cycle1_zone_being_watered
+            icon: mdi:fountain
+          - timer.cycle1_zone_duration
+          - input_number.cycle1_zone1_duration
+          - input_number.cycle1_zone2_duration
+          - input_number.cycle1_zone3_duration
+          - input_number.cycle1_zone4_duration
+          - input_number.cycle1_zone5_duration
+
+          #=== Morning Schedule details
+          - type: custom:fold-entity-row
+            head: 
+              entity: input_boolean.cycle1_enable
+            items:
+              - entity: sensor.cycle1_next_run_time
+                icon: mdi:clock-start
+              - input_select.cycle1_schedule_time
+              - input_select.cycle1_watering_days
+
+          #=== Morning Weather Adjustment details
+          - type: custom:fold-entity-row
+            head: 
+              entity: input_boolean.cycle1_use_weather_adjustment
+            items:
+              - entity: sensor.cycle1_zone1_duration_adjusted
+                icon: mdi:camera-timer
+              - entity: sensor.cycle1_zone2_duration_adjusted
+                icon: mdi:camera-timer
+              - entity: sensor.cycle1_zone3_duration_adjusted
+                icon: mdi:camera-timer
+              - entity: sensor.cycle1_zone4_duration_adjusted
+                icon: mdi:camera-timer
+              - entity: sensor.cycle1_zone5_duration_adjusted
+                icon: mdi:camera-timer
+
+  #====================
+  #=== Afternoon Cycle
+  #====================
+  - type: conditional
+    conditions:
+      - entity: input_boolean.irrigation_master_control_switch
+        state: 'on'
+    card:
+      type: custom:card-modder
+      style:
+        border-radius: 20px
+        overflow: hidden
+        box-shadow: '2px 2px rgba(0,0,0,0.4)'
+        border: 'solid 1px rgba(100,100,100,0.3)'
+      card:
+
+        #=== Afternoon Cycle details
+        type: entities
+        title: Afternoon Cycle
+        show_header_toggle: false
+        entities:
+          - sensor.cycle2_running
+          - entity: sensor.cycle2_zone_being_watered
+            icon: mdi:fountain
+          - timer.cycle2_zone_duration
+          - input_number.cycle2_zone1_duration
+          - input_number.cycle2_zone2_duration
+          - input_number.cycle2_zone3_duration
+          - input_number.cycle2_zone4_duration
+          - input_number.cycle2_zone5_duration
+
+          #=== Afternoon Schedule details
+          - type: custom:fold-entity-row
+            head: 
+              entity: input_boolean.cycle2_enable
+            items:
+              - entity: sensor.cycle2_next_run_time
+                icon: mdi:clock-start
+              - input_select.cycle2_schedule_time
+              - input_select.cycle2_watering_days
+
+          #=== Afternoon Weather Adjustment details
+          - type: custom:fold-entity-row
+            head: 
+              entity: input_boolean.cycle2_use_weather_adjustment
+            items:
+              - entity: sensor.cycle2_zone1_duration_adjusted
+                icon: mdi:camera-timer
+              - entity: sensor.cycle2_zone2_duration_adjusted
+                icon: mdi:camera-timer
+              - entity: sensor.cycle2_zone3_duration_adjusted
+                icon: mdi:camera-timer
+              - entity: sensor.cycle2_zone4_duration_adjusted
+                icon: mdi:camera-timer
+              - entity: sensor.cycle2_zone5_duration_adjusted
+                icon: mdi:camera-timer
+
