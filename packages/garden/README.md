@@ -18,7 +18,7 @@ __Disclaimer__ - This was the first thing I wrote for HA (apart from the obligat
 <h1>Here is how it looks in Lovelace</h1> 
 
 
-__The Master control Switch OFF hides all other UI elements__
+__The Master Control Switch 'OFF' hides all other UI elements__
 
 <img src="https://github.com/kloggy/Home-Assistant/blob/master/packages/garden/Screenshots/MasterControlSwitch.png">
 
