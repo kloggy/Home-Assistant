@@ -26,10 +26,10 @@ __The Morning Cycle showing the Schedule__
 
 <img src="https://github.com/kloggy/Home-Assistant/blob/master/packages/garden/Screenshots/MorningCycleWithSchedule.png">
 
-__The Morning Cycle showing the Weather Adjustments
+__The Morning Cycle showing the Weather Adjustments__
 
 <img src="https://github.com/kloggy/Home-Assistant/blob/master/packages/garden/Screenshots/MorningCycleWithWeatherAdjustments.png">
 
-__Showing the Irrigation History
+__Showing the Irrigation History__
 
 <img src="https://github.com/kloggy/Home-Assistant/blob/master/packages/garden/Screenshots/IrrigationHistory.png">
