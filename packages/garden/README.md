@@ -17,6 +17,8 @@ __Disclaimer__ - This was the first thing I wrote for HA (apart from the obligat
 
 <h1>Here is how it looks in Lovelace</h1> 
 
+(Note that this was posted just before HA version 0.88 which I believe will make my use of card-modder in these views redundant)
+
 
 __The Master Control Switch 'OFF' hides all other UI elements__
 
