@@ -5,7 +5,7 @@
 
 This package is a completely self-contained* system for Home Assistant which as presented here will control five different irrigation zones over two cylces per day. However, I have tried to write it in such a way that there is as little code replication as possible which means that if you want a different number of zones then you more or less have to just add more (or remove) some  ```input_boolean / number / datetime / select```s in```garden_globals.yaml``` and the rest of the code largely takes care of itself. There are a couple of automations that will also need to be replicated but I think (hope) that these should be self-explanatory.
 
-The system as I have it implemented is based around Sonoffs controlling the valves but that should be irrelevant.
+The system as I have it implemented is based around Sonoffs flashed with Tasmota controlling the valves but that should be irrelevant.
 
 The weather calculation sections are experimental and I have never actually relied on them. 
 
