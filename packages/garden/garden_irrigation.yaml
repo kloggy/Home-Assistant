@@ -118,7 +118,7 @@ automation:
       #=== Don't run if the other cycle is already running
       - condition: template
         value_template: >
-          {% if trigger_entity_id == 'input_boolean.cycle1_manual_run' %}
+          {% if trigger.entity_id == 'input_boolean.cycle1_manual_run' %}
             {{ states('sensor.cycle2_running') == 'Not running' }}
           {% else %}
             {{ states('sensor.cycle1_running') == 'Not running' }}
