@@ -6,6 +6,9 @@ automation:
 
   #============================================================
   #=== Set next run time when schedule enabled or time changed
+  #===
+  #=== TO DO
+  #===   Set PULSETIMEx to slightly more than the corresponding zone runtime (use MQTT)
   #============================================================
   - alias: Irrigation - Set next run time when schedule enabled or time changed
     initial_state: on
@@ -25,15 +28,13 @@ automation:
       - service: input_datetime.set_datetime
         data_template:
           entity_id: >
-            {% if trigger.entity_id == 'input_boolean.cycle1_enable' or
-                  trigger.entity_id == 'input_select.cycle1_schedule_time' %}
+            {% if 'cycle1' in trigger.entity_id %}
               input_datetime.cycle1_next_run_time
             {% else %}
               input_datetime.cycle2_next_run_time
             {% endif %}
           date: >
-            {% if trigger.entity_id == 'input_boolean.cycle1_enable' or
-                  trigger.entity_id == 'input_select.cycle1_schedule_time' %}
+            {% if 'cycle1' in trigger.entity_id %}
               {% set time = states('input_select.cycle1_schedule_time') %}
             {% else %}
               {% set time = states('input_select.cycle2_schedule_time') %}
@@ -44,8 +45,7 @@ automation:
               {{ (as_timestamp(now()) + 24 * 3600 ) | timestamp_custom("%Y-%m-%d") }}
             {% endif %}
           time: >
-            {% if trigger.entity_id == 'input_boolean.cycle1_enable' or
-                  trigger.entity_id == 'input_select.cycle1_schedule_time' %}
+            {% if 'cycle1' in trigger.entity_id %}
               {{ states('input_select.cycle1_schedule_time') }}
             {% else %}
               {{ states('input_select.cycle2_schedule_time') }}
@@ -149,21 +149,24 @@ automation:
       - service: homeassistant.turn_off
         entity_id: script.irrigation_irrigate_a_zone
 
-      #=== Save save the current state of cycle_enabled boolean
-      - service: input_boolean.set_value  
-        data_template:
-          entity_id: >
-            {% if trigger.entity_id == 'input_boolean.cycle1_manual_run' %}
-              input_boolean.cycle1_enable_saved_state
-            {% else %}
-              input_boolean.cycle2_enable_saved_state
-            {% endif %}
-          value: >
-            {% if trigger.entity_id == 'input_boolean.cycle1_manual_run' %}
-              {{ states('input_boolean.cycle1_enable') }}
-            {% else %}
-              {{ states('input_boolean.cycle2_enable') }}
-            {% endif %}
+      # #=== Save the current state of both cycle_enabled booleans
+      - service_template: >
+          {% if is_state('input_boolean.cycle1_enable', 'on') %}
+            input_boolean.turn_on
+          {% else %}
+            input_boolean.turn_off
+          {% endif %}
+        data:
+          entity_id: input_boolean.cycle1_enable_saved_state
+
+      - service_template: >
+          {% if is_state('input_boolean.cycle2_enable', 'on') %}
+            input_boolean.turn_on
+          {% else %}
+            input_boolean.turn_off
+          {% endif %}
+        data:
+          entity_id: input_boolean.cycle2_enable_saved_state
 
       #=== Disable both programmes
       - service: homeassistant.turn_off
@@ -191,21 +194,24 @@ automation:
         - input_boolean.cycle1_manual_run
         - input_boolean.cycle2_manual_run
 
-      #=== Restore the previous state of cycle_enabled boolean
-      - service: input_boolean.set_value  
-        data_template:
-          entity_id: >
-            {% if trigger.entity_id == 'input_boolean.cycle1_manual_run' %}
-              input_boolean.cycle1_enable
-            {% else %}
-              input_boolean.cycle2_enable
-            {% endif %}
-          value: >
-            {% if trigger.entity_id == 'input_boolean.cycle1_manual_run' %}
-              {{ states('input_boolean.cycle1_enable_saved_state') }}
-            {% else %}
-              {{ states('input_boolean.cycle2_enable_saved_state') }}
-            {% endif %}
+      # #=== Restore the previous state of both cycle_enabled booleans
+      - service_template: >
+          {% if is_state('input_boolean.cycle1_enable_saved_state', 'on') %}
+            input_boolean.turn_on
+          {% else %}
+            input_boolean.turn_off
+          {% endif %}
+        data:
+          entity_id: input_boolean.cycle1_enable
+
+      - service_template: >
+          {% if is_state('input_boolean.cycle2_enable_saved_state', 'on') %}
+            input_boolean.turn_on
+          {% else %}
+            input_boolean.turn_off
+          {% endif %}
+        data:
+          entity_id: input_boolean.cycle2_enable
 
 
   #=======================
@@ -383,14 +389,14 @@ script:
           entity_id: input_boolean.cycle{{ cycle }}_running
 
       #=== Turn off schedule if run 'Once' selected
-      - service: input_boolean.set_value  
+      - service_template: >
+            {% if states('input_select.cycle' + cycle + '_watering_days') == 'Once' %}
+              input_boolean.turn_off
+            {% else %}
+              input_boolean.turn_on
+            {% endif %}
         data_template:
           entity_id: input_boolean.cycle{{ cycle }}_enabled
-          value: >
-            {% if states('input_select.cycle' + cycle + '_watering_days') == 'Daily' %}
-              'off'
-            {% else %}
-            {% endif %}
 
   #==============================
   #=== Script to irrigate a zone
