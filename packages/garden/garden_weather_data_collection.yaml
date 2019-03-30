@@ -100,59 +100,64 @@ sensor:
       # Temperature
       temp_minus0:
         friendly_name: Temp today
-        value_template: "{{ states('input_number.temp_minus0') | int }}"     
+        value_template: "{{ states('input_number.temp_minus0') }}"     
         unit_of_measurement: "°C"
 
       temp_minus1:
         friendly_name: Temp yesterday
-        value_template: "{{ states('input_number.temp_minus1') | int }}"     
+        value_template: "{{ states('input_number.temp_minus1') }}"     
         unit_of_measurement: "°C"
 
       temp_minus2:
         friendly_name: Temp 2 days ago
-        value_template: "{{ states('input_number.temp_minus2') | int }}"     
+        value_template: "{{ states('input_number.temp_minus2') }}"     
         unit_of_measurement: "°C"
 
       temp_minus3:
         friendly_name: Temp 3 days ago
-        value_template: "{{ states('input_number.temp_minus3') | int }}"     
+        value_template: "{{ states('input_number.temp_minus3') }}"     
         unit_of_measurement: "°C"
 
       temp_minus4:
         friendly_name: Temp 4 days ago
-        value_template: "{{ states('input_number.temp_minus4') | int }}"     
+        value_template: "{{ states('input_number.temp_minus4') }}"     
         unit_of_measurement: "°C"
 
       temp_high_2days:
         friendly_name: Avg 2 day temp
-        value_template: "{{ states('input_number.temp_high_2days') | int }}"     
+        value_template: "{{ states('input_number.temp_high_2days') }}"     
         unit_of_measurement: "°C"
 
       temp_high_5days:
         friendly_name: Avg 5 day temp
-        value_template: "{{ states('input_number.temp_high_5days') | int }}"     
+        value_template: "{{ states('input_number.temp_high_5days') }}"     
         unit_of_measurement: "°C"
 
 
       # Rainfall
+      # rain_minus0:
+      #   friendly_name: Rain today
+      #   value_template: "{{ states('input_number.rain_minus0') | int }}"     
+      #   unit_of_measurement: "mm"
+
       rain_minus0:
         friendly_name: Rain today
-        value_template: "{{ states('input_number.rain_minus0') | int }}"     
+        value_template: "{{ states('sensor.smartweather_rain_today') }}"     
         unit_of_measurement: "mm"
 
       rain_minus1:
         friendly_name: Rain yesterday
-        value_template: "{{ states('input_number.rain_minus1') | int }}"     
+        value_template: "{{ states('input_number.rain_minus1') }}"     
         unit_of_measurement: "mm"
 
       rain_minus2:
         friendly_name: Rain 2 days ago
-        value_template: "{{ states('input_number.rain_minus2') | int }}"     
+        value_template: "{{ states('input_number.rain_minus2') }}"     
         unit_of_measurement: "mm"
 
       rain_minus3:
         friendly_name: Rain 3 days ago
-        value_template: "{{ states('input_number.rain_minus3') | int }}"     
+        value_template: "{{ states('input_number.rain_minus3') }}"     
         unit_of_measurement: "mm"
 
       rain_3days_ratio:
@@ -172,8 +177,7 @@ automation:
     initial_state: 'on'
     trigger:
       - platform: time
-        at: '00:15:00'
-        # NOTE: I am not sure when the coming day forecast is updated.
+        at: '01:00:00'
 
     action:
       # These scripts pass the count of entities but in this case as I 
@@ -183,7 +187,7 @@ automation:
       - service: script.garden_temperature_data
         data_template:
           loop_count: >
-            {% set ns = namespace(count) %}
+            {% set ns = namespace(count = 0) %}
             {% for item in states if item.entity_id.startswith('input_number.temp_minus') %}
               {% set ns.count = loop.index %}
             {% endfor %}
@@ -193,13 +197,22 @@ automation:
       - service: script.garden_rainfall_data
         data_template:
           loop_count: >
-            {% set ns = namespace(count) %}
+            {% set ns = namespace(count = 0) %}
             {% for item in states if item.entity_id.startswith('input_number.rain_minus') %}
               {% set ns.count = loop.index %}
             {% endfor %}
             {{ (ns.count - 1) }}
 
-      
+###### EXTRA AUTOMATION NEEDED HERE
+###### TO COLLECT RAINFALL DATA EVERY HOUR
+###### INTO input_number.rain_minus0
+###### USING sensor.smartweather_precpitation_last_1hr
+######
+###### This could be done before irrigation starts by
+###### by using sensor.smartweather_rain_today if
+###### weather adjustments are being made as it is not
+###### needed for cycling the history
+
 #=============
 # === Scripts
 #=============
@@ -212,6 +225,8 @@ script:
     sequence:
 
       # Cycle the temperature figures.
+      # Passed {{ loop_count}} which is the number relating to the highest entity
+      # e.g. input_number.temp_minus4
 
       # Setting the temperature for today:
       # DarkSky dark_sky_forecast_temperature_high_0 is used as the high temperature.
@@ -222,8 +237,6 @@ script:
       # This is because the DarkSky max temperature appears to change during
       # the day to reflect max temperature for the remainder of the day???
 
-      # Passed {{ loop_count}} which is the number relating to the highest entity
-      # e.g. input_number.temp_minus4
       - service: input_number.set_value
         data_template:
           entity_id: >
@@ -275,32 +288,35 @@ script:
     sequence:
 
       # Cycle the rainfall figures.
-
-      # Setting the forecast rain for today:
-      # DarkSky precip_probability_0 is used as the probability of rain.
-
-      # ===== THIS NEEDS TO BE LOOKED AT
-      # This is done here so that it is only done once a day after midnight.
-      # (Need to check if dark_sky_precip_intensity * 24 is a good measure.)
-      # No w using sensor.rainfall_today * 24 - new integration sensor in 'testing'
-
       # Passed {{ loop_count}} which is the number relating to the highest entity
       # e.g. input_number.rain_minus3
+
+      # Now using sensor.smartweather_rain_yesterday
+      # Make todays rain zero
+
       - service: input_number.set_value
         data_template:
           entity_id: >
             input_number.rain_minus{{ loop_count }}
           value: >
             {% if loop_count | int == 0 %}
-              {{ states('sensor.rainfall_today') | float * 24 }} 
+              0 
+            {% elif loop_count | int == 1 %}
+              {{ states('sensor.smartweather_rain_yesterday') }} 
             {% else %}
               {{ states('input_number.rain_minus' ~ (loop_count | int - 1) | string) }}
             {% endif %}
 
-      # Stop when count is 0
+      # # Stop when count is 0
+      # - condition: template
+      #   value_template: >
+      #     {{ loop_count | int > 0 }}
+
+      # Stop when count is 1 because day zero is rain today which
+      # is collected directly from the sensor.smartweather_rain_today
       - condition: template
         value_template: >
-          {{ loop_count | int > 0 }}
+          {{ loop_count | int > 1 }}
 
       # Stop the looping script...
       - service: homeassistant.turn_off
