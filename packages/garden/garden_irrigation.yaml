@@ -463,7 +463,7 @@ script:
 
 
   #========================================================================
-  #=== Set Sonoff PULSETIME to 15 seconds longer than the zone runtime
+  #=== Set Sonoff PULSETIME to 30 seconds longer than the zone runtime
   #=== is passed:
   #===   {{ cycle }}
   #===   {{ zone }}
@@ -471,6 +471,9 @@ script:
   #=== This acts as a fail safe in the event of any communication failure
   #=== between HA and the Sonoff. The Sonoff will switch off under its own
   #=== control so closing the valve.
+  #===
+  #=== Note: From the Tasmota wiki, for a Pulsetime greater than 11 seconds
+  #===       it should be set to 100 + (minutes * 60)
   #========================================================================
   set_sonoff_pulsetime:
     sequence:
@@ -480,6 +483,6 @@ script:
             sonoff4ch01/cmnd/pulsetime{{ zone }}
           payload: >
             {% set payload = states('input_number.cycle' + cycle + '_zone' + zone + '_duration')  | int %}
-            {% set payload = (payload * 60) + 15 %}
+            {% set payload = 100 + (payload * 60) + 30 %}
             {{ payload }}
 
