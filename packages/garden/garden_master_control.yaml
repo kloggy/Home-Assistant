@@ -1,4 +1,4 @@
-#=================
+=================
 # === Automations
 #=================
 automation:
@@ -12,7 +12,7 @@ automation:
   #===
   #===   i.e. all automations with a name beginning with either
   #===        'Irrigation - ' or
-  #===        'Weather Irrigation - '
+  #===        'Irrigation Weather - '
   #===
   #=== Also checks when HA starts.
   #====================================================================
