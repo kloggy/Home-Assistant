@@ -32,13 +32,15 @@ cards:
             #=== Manual control buttons
             - type: horizontal-stack
               cards:
-                - type: entity-button
+                - type: custom:toggle-lock-entity-row
+#                - type: entity-button
                   entity: input_boolean.cycle1_manual_run
                   name: Morning Cycle
                   tap_action:
                     action: toggle
 
-                - type: entity-button
+                - type: custom:toggle-lock-entity-row
+#                - type: entity-button
                   entity: input_boolean.cycle2_manual_run
                   name: Afternoon Cycle
                   tap_action:
@@ -96,7 +98,7 @@ cards:
                 - type: custom:fold-entity-row
                   head: 
                     type: section
-                    label: History
+                    label: Weather History
                   items:
                     - type: section
                       label: Temperature
@@ -187,6 +189,7 @@ cards:
         #=== Morning Schedule details
         - type: custom:fold-entity-row
           head: 
+            type: custom:toggle-lock-entity-row
             entity: input_boolean.cycle1_enable
           items:
             - entity: sensor.cycle1_next_run_time
@@ -236,6 +239,7 @@ cards:
         #=== Afternoon Schedule details
         - type: custom:fold-entity-row
           head: 
+            type: custom:toggle-lock-entity-row
             entity: input_boolean.cycle2_enable
           items:
             - entity: sensor.cycle2_next_run_time
