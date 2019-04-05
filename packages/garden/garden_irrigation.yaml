@@ -6,6 +6,8 @@ automation:
 
   #============================================================
   #=== Set next run time when schedule enabled or time changed
+  #===
+  #=== TO DO: or when Watering Days changes???
   #============================================================
   - alias: Irrigation - Set next run time when schedule enabled or time changed
     initial_state: on
@@ -20,6 +22,11 @@ automation:
         entity_id:
           - input_select.cycle1_schedule_time
           - input_select.cycle2_schedule_time
+    
+      - platform: state
+        entity_id:
+          - input_select.cycle1_watering_days
+          - input_select.cycle2_watering_days
     
     action:
       - service: input_datetime.set_datetime
@@ -75,6 +82,10 @@ automation:
         data_template:
           cycle: 1
 
+      - service: script.update_next_runtime
+        data_template:
+          cycle: 1
+
   #=== Cycle 2
   - alias: Irrigation - Run Cycle 2
     initial_state: 'on'
@@ -94,6 +105,10 @@ automation:
 
     action:
       - service: script.irrigation_run_a_cycle
+        data_template:
+          cycle: 2
+
+      - service: script.update_next_runtime
         data_template:
           cycle: 2
 
@@ -302,20 +317,6 @@ script:
   irrigation_run_a_cycle:
     sequence:
 
-      #=== Update next runtime
-      - service: input_datetime.set_datetime
-        data_template:
-          entity_id: input_datetime.cycle{{ cycle }}_next_run_time
-          date: >
-            {% if states('input_select.cycle' + cycle + '_watering_days') == 'Daily' %}
-              {{ (as_timestamp(now() ) + 24 * 3600 ) | timestamp_custom("%Y-%m-%d") }}
-            {% elif states('input_select.cycle' + cycle + '_watering_days') == 'Alternate' %}  
-              {{ (as_timestamp(now() ) + 48 * 3600 ) | timestamp_custom("%Y-%m-%d") }}
-            {% else %}
-            {% endif %}
-          time: >
-            {{ states('input_select.cycle' + cycle + '_schedule_time') }}
-
       #=== Only continue if no cycle is running
       - condition: state
         entity_id: 'sensor.cycle1_running'
@@ -460,6 +461,28 @@ script:
       - wait_template: >
           {% set entity = 'switch.zone' + zone + '_valve' %}
           {{ is_state(entity , 'off') }}
+
+
+  #==================================
+  #=== Script to update next runtime
+  #=== is passed:
+  #===   {{ cycle }}
+  #==================================
+  update_next_runtime:
+    sequence:
+      - service: input_datetime.set_datetime
+        data_template:
+          entity_id: input_datetime.cycle{{ cycle }}_next_run_time
+          date: >
+            {% if states('input_select.cycle' + cycle + '_watering_days') == 'Daily' %}
+              {{ (as_timestamp(now() ) + 24 * 3600 ) | timestamp_custom("%Y-%m-%d") }}
+            {% elif states('input_select.cycle' + cycle + '_watering_days') == 'Alternate' %}  
+              {{ (as_timestamp(now() ) + 48 * 3600 ) | timestamp_custom("%Y-%m-%d") }}
+            {% else %}
+              {{ states('input_datetime.cycle' + cycle + '_next_run_time').split(' ')[0] }}
+            {% endif %}
+          time: >
+            {{ states('input_select.cycle' + cycle + '_schedule_time') }}
 
 
   #========================================================================
