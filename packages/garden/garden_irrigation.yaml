@@ -6,8 +6,6 @@ automation:
 
   #============================================================
   #=== Set next run time when schedule enabled or time changed
-  #===
-  #=== TO DO: or when Watering Days changes???
   #============================================================
   - alias: Irrigation - Set next run time when schedule enabled or time changed
     initial_state: on
