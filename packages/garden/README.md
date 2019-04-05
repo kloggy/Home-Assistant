@@ -15,10 +15,12 @@ __Disclaimer__ - This was the first thing I wrote for HA (apart from the obligat
 
 *Any feedback including constructive criticism is very welcome and I'm particularly interested if you have any ideas for improving the weather calculations.*
 
+__Weather sensors:__ I use SmartWeather and DarkSky weather sensors to provide the data for duration adjustments.
+
+Smart Weather is a custom component - https://github.com/briis/smartweather
+  
+
 <h1>Here is how it looks in Lovelace</h1> 
-
-(Note that this was posted just before HA version 0.88 which I believe will make my use of card-modder in these views redundant)
-
 
 __The Master Control Switch 'OFF' hides all other UI elements__
 
