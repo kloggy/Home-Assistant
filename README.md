@@ -11,4 +11,3 @@ See here for more information - https://community.home-assistant.io/t/my-garden-
 
 Thanks to @itajackass for finding the Sonoff command.
 
-I should point out that this is NOT yet fully tested.
