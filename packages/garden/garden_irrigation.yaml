@@ -403,11 +403,10 @@ script:
   irrigation_irrigate_a_zone:
     sequence:
 
-      #=== Call the script to set the sonoff PULSETIME
-      - service: script.set_sonoff_pulsetime
-        data_template:
-          cycle: '{{ cycle }}'
-          zone: '{{ zone }}'
+      #=== Don't continue if switch is unavailable
+      - condition: template
+        value_template: >
+          {{ states('switch.zone' + zone + '_valve') != 'unavailable' }}
 
       #=== Don't continue if duration is zero
       - condition: template
@@ -415,6 +414,12 @@ script:
           {% set n = states('input_number.cycle' + cycle + '_zone' + zone + '_duration')  | int %}
             {{ n != 0 }}
           
+      #=== Call the script to set the sonoff PULSETIME
+      - service: script.set_sonoff_pulsetime
+        data_template:
+          cycle: '{{ cycle }}'
+          zone: '{{ zone }}'
+
       #=== Wait 5 seconds for good measure to ensure previous zone is completly finished
       - delay: "00:00:05"
 
