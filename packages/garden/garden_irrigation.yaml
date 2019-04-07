@@ -307,11 +307,11 @@ automation:
 #============
 script:
 
-  #==============================
+  #==========================
   #=== Script to run a cycle
   #=== is passed:
   #===   {{ cycle }}
-  #==============================
+  #==========================
   irrigation_run_a_cycle:
     sequence:
 
@@ -335,7 +335,7 @@ script:
           cycle: '{{ cycle }}'
           zone: 1
 
-      #=== Wait for irrigate script to end
+      #=== Wait for script.irrigation_irrigate_a_zone to end
       - wait_template: "{{ is_state('script.irrigation_irrigate_a_zone', 'off') }}"
 
       #=== Call the script to irrigate zone 2
@@ -344,7 +344,7 @@ script:
           cycle: '{{ cycle }}'
           zone: 2
 
-      # Wait for script.irrigation_irrigate_a_zone to end
+      #=== Wait for script.irrigation_irrigate_a_zone to end
       - wait_template: "{{ is_state('script.irrigation_irrigate_a_zone', 'off') }}"
       
       #=== Call the script to irrigate zone 3
@@ -394,6 +394,7 @@ script:
         data_template:
           entity_id: input_boolean.cycle{{ cycle }}_enabled
 
+
   #==============================
   #=== Script to irrigate a zone
   #=== is passed:
@@ -411,7 +412,11 @@ script:
       #=== Don't continue if duration is zero
       - condition: template
         value_template: >
-          {% set n = states('input_number.cycle' + cycle + '_zone' + zone + '_duration')  | int %}
+            {% if is_state('input_boolean.cycle' + cycle + '_use_weather_adjustment', 'on') %}
+              {% set n = states('input_number.adjusted_cycle' + cycle + '_zone' + zone + '_duration')  | int %}
+            {% else %}
+              {% set n = states('input_number.cycle' + cycle + '_zone' + zone + '_duration')  | int %}
+            {% endif %}
             {{ n != 0 }}
           
       #=== Call the script to set the sonoff PULSETIME
