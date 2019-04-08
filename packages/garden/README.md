@@ -18,7 +18,20 @@ __Disclaimer__ - This was the first thing I wrote for HA (apart from the obligat
 __Weather sensors:__ I use SmartWeather and DarkSky weather sensors to provide the data for duration adjustments.
 
 Smart Weather is a custom component - https://github.com/briis/smartweather
-  
+
+--------------
+
+<h6>Thanks to @krash, @itajackass and @woody4165 for suggestions and help in making it better.</h6>
+
+--------------
+
+## Changes ##
+*5 April 2019* - Corrected the logic for updating next run time.
+
+-----------------
+
+*31 March 2019* - I have added a script to ```garden_irrigation.yaml``` that sets ```pulsetime[1, 2, 3, 4]``` on the Sonoff to act as a failsafe in the event that HA loses any communication with  the switch.
+
 
 <h1>Here is how it looks in Lovelace</h1> 
 
