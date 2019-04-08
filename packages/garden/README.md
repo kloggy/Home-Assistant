@@ -28,8 +28,6 @@ Smart Weather is a custom component - https://github.com/briis/smartweather
 ## Changes ##
 *5 April 2019* - Corrected the logic for updating next run time.
 
------------------
-
 *31 March 2019* - I have added a script to ```garden_irrigation.yaml``` that sets ```pulsetime[1, 2, 3, 4]``` on the Sonoff to act as a failsafe in the event that HA loses any communication with  the switch.
 
 
