@@ -243,7 +243,7 @@ script:
             input_number.temp_minus{{ loop_count }}
           value: >
             {% if loop_count | int == 0 %}
-              {{ states('sensor.dark_sky_forecast_daytime_high_temperature_0') | float }}
+              {{ states('sensor.dark_sky_forecast_daytime_high_temperature_0d') | float }}
             {% else %}
               {{ states('input_number.temp_minus' ~ (loop_count | int - 1) | string) }}
             {% endif %}
