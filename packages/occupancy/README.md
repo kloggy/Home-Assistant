@@ -5,7 +5,7 @@
 
 This package is (mostly) self-contained and allows for an ad-hoc guest mode as well as two or more regular schedules.
 
-<h1>Here is how it looks in Lovelace</h1> 
+<h2>Here is how it looks in Lovelace</h2> 
 
 __Guest Mode 'OFF'__
 
