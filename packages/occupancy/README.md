@@ -5,7 +5,7 @@
 
 This package is (mostly) self-contained and allows for an ad-hoc guest mode as well as two or more regular schedules.
 
-You will obviously need manage how you deal with Occupancy in general because everyone's requirements are different but to use this you will need to include the following somewhere in your configuration to indicate that Guest Mode is active:
+You will obviously need manage how you deal with Occupancy in general because everyone's requirements are different but to use this package you will need to include the following somewhere in your configuration to indicate that Guest Mode is active:
 
 
 ```
