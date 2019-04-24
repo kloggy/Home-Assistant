@@ -9,4 +9,29 @@ This package is (mostly) self-contained and allows for an ad-hoc guest mode as w
 
 __Guest Mode 'OFF'__
 
-<img src="https://github.com/kloggy/Home-Assistant/blob/master/packages/garden/Screenshots/Guest Mode OFf.png">
+<img src="https://github.com/kloggy/Home-Assistant/blob/master/packages/occupancy/screenshots/GuestModeOff.png">
+
+
+__Guest Mode 'ON'__
+
+<img src="https://github.com/kloggy/Home-Assistant/blob/master/packages/occupancy/screenshots/GuestModeOn.png">
+
+
+__Guest Mode 'ON' expanded__
+
+<img src="https://github.com/kloggy/Home-Assistant/blob/master/packages/occupancy/screenshots/GuestModeOnExpanded.png">
+
+
+__Guest Mode 'ON' fully expanded__
+
+<img src="https://github.com/kloggy/Home-Assistant/blob/master/packages/occupancy/screenshots/GuestModeOnFullyExpanded.png">
+
+
+__Guest Mode 'ON' two schedules fully expanded__
+
+<img src="https://github.com/kloggy/Home-Assistant/blob/master/packages/occupancy/screenshots/GuestModeOnTwoSchedulesFullyExpanded.png">
+
+
+__Guest Mode popup__
+
+<img src="https://github.com/kloggy/Home-Assistant/blob/master/packages/occupancy/screenshots/GuestModePopup.png">
