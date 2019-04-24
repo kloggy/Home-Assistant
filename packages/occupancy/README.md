@@ -5,6 +5,34 @@
 
 This package is (mostly) self-contained and allows for an ad-hoc guest mode as well as two or more regular schedules.
 
+You will obviously need manage how you deal with Occupancy in general because everyone's requirements are different but to use this you will need to include the following somewhere in your configuration to indicate that Guest Mode is active:
+
+
+```
+#===================
+#=== Binary Sensors
+#===================
+binary_sensor:
+  - platform: template
+    sensors:
+
+      #======================================================
+      #=== Guest Mode - set on when a guest timer is running
+      #======================================================
+      guest_mode:
+        friendly_name: Guest mode
+        value_template: >
+          {{ is_state('timer.guest_mode_once_duration', 'active') or
+             is_state('timer.guest_mode_schedule_1_duration', 'active') or      
+             is_state('timer.guest_mode_schedule_2_duration', 'active') }}      
+        icon_template: >
+          {% if is_state('binary_sensor.guest_mode', 'on') %}      
+            mdi:account-multiple
+          {% else %}
+            mdi:account-multiple-minus
+          {% endif %}
+```
+
 <h2>Here is how it looks in Lovelace</h2> 
 
 __Guest Mode 'OFF'__
