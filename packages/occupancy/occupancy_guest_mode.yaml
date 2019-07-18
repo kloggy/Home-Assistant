@@ -1,123 +1,354 @@
-#===================
-#=== Input booleans
-#===================
-input_boolean:
-
-  # Guest mode is used when a guest is in the house but either does not 
-  # have a known device or is not 'trusted' indefinitely e.g. the cleaner.
-  guest_mode_once:
-    name: Guest mode (once)
-    icon: mdi:human-handsup
-
-  guest_mode_schedule_1:
-    name: Guest mode schedule (1)
-    icon: mdi:human-handsup
-
-  guest_mode_schedule_2:
-    name: Guest mode schedule (2)
-    icon: mdi:human-handsup
-
-  holiday_mode_on:
-    name: Holiday mode on
-    icon: mdi:beach
-
-
 #================
-#=== Input texts
+#=== Automations
 #================
-input_text:
-  guest_mode_schedule_1_name:
-    name: Name
-    
-  guest_mode_schedule_2_name:
-    name: Name
+automation:
+
+  #====================================================
+  #=== Check Guest mode schedule timers at HA start up
+  #===
+  #=== If the house is not in holiday mode and
+  #=== if they are turned on, it is the right day and
+  #=== the time now is during the on time then set
+  #=== the timer to run until the scheduled end time.
+  #====================================================
+  #=== Guest Schedule 1
+  - alias: Guest mode schedule 1 check at startup
+    # initial_state: on
+    trigger:
+      - platform: homeassistant
+        event: start
+
+    condition:
+      - condition: state
+        entity_id: binary_sensor.holiday_mode
+        state: 'off'
+
+      - condition: state
+        entity_id: input_boolean.guest_mode_schedule_1
+        state: 'on'
+
+      - condition: or
+        conditions:
+          - condition: template
+            value_template: "{{ states('input_select.guest_mode_schedule_1_day') == now().strftime('%A') }}"
+
+          - condition: state
+            entity_id: input_select.guest_mode_schedule_1_day
+            state: 'Every Day'
+
+      - condition: template
+        value_template: >
+          {% set time_now = as_timestamp(now()) %}
+          {% set start_time = states('input_datetime.guest_mode_schedule_1_start_time') %}
+          {% set start_time = as_timestamp(now()) | timestamp_custom('%Y-%m-%d') + ' ' + start_time %}
+          {% set duration = states('input_number.guest_mode_schedule_1_duration') | int * 60 %}
+          {% set end_time = as_timestamp(start_time) + duration %}
+
+          {{ time_now > as_timestamp(start_time) and time_now < end_time }}
+
+    action:
+      - service: timer.start
+        data_template:
+          entity_id: timer.guest_mode_schedule_1_duration
+          duration: >
+            {% set time_now = as_timestamp(now()) %}
+            {% set start_time = states('input_datetime.guest_mode_schedule_1_start_time') %}
+            {% set start_time = as_timestamp(now()) | timestamp_custom('%Y-%m-%d') + ' ' + start_time %}
+            {% set duration = states('input_number.guest_mode_schedule_1_duration') | int * 60 %}
+            {% set end_time = as_timestamp(start_time) + duration %}
+            {% set seconds_left = end_time - time_now %}
+            {% set hours_left = seconds_left // 3600  %}
+            {% set minutes_left = (seconds_left - (hours_left * 3600)) // 60 %}
+
+            {{ '%02i' | format(hours_left) }}:{{ '%02i' | format(minutes_left) }}:01
 
 
-#===================
-#=== Input numbers
-#===================
-input_number:
-  guest_mode_once_duration:
-    name: Duration
-    icon: mdi:camera-timer
-    min: 0
-    max: 360
-    step: 30
-    unit_of_measurement: 'mins'
+  #=== Guest Schedule 2
+  - alias: Guest mode schedule 2 check at startup
+    # initial_state: on
+    trigger:
+      - platform: homeassistant
+        event: start
 
-  guest_mode_schedule_1_duration:
-    name: Duration
-    icon: mdi:camera-timer
-    min: 0
-    max: 360
-    step: 30
-    unit_of_measurement: 'mins'
+    condition:
+      - condition: state
+        entity_id: binary_sensor.holiday_mode
+        state: 'off'
 
-  guest_mode_schedule_2_duration:
-    name: Duration
-    icon: mdi:camera-timer
-    min: 0
-    max: 360
-    step: 30
-    unit_of_measurement: 'mins'
+      - condition: state
+        entity_id: input_boolean.guest_mode_schedule_2
+        state: 'on'
 
+      - condition: or
+        conditions:
+          - condition: template
+            value_template: "{{ states('input_select.guest_mode_schedule_2_day') == now().strftime('%A') }}"
 
-#==================
-#=== Input selects
-#==================
-input_select:
-  guest_mode_schedule_1_day:
-    name: Day
-    options:
-      - 'Every Day'
-      - 'Monday'
-      - 'Tuesday'
-      - 'Wednesday'
-      - 'Thursday'
-      - 'Friday'
-      - 'Sataurday'
-      - 'Sunday'
-    icon: mdi:calendar
+          - condition: state
+            entity_id: input_select.guest_mode_schedule_2_day
+            state: 'Every Day'
 
-  guest_mode_schedule_2_day:
-    name: Day
-    options:
-      - 'Every Day'
-      - 'Monday'
-      - 'Tuesday'
-      - 'Wednesday'
-      - 'Thursday'
-      - 'Friday'
-      - 'Sataurday'
-      - 'Sunday'
-    icon: mdi:calendar
+      - condition: template
+        value_template: >
+          {% set time_now = as_timestamp(now()) %}
+          {% set start_time = states('input_datetime.guest_mode_schedule_2_start_time') %}
+          {% set start_time = as_timestamp(now()) | timestamp_custom('%Y-%m-%d') + ' ' + start_time %}
+          {% set duration = states('input_number.guest_mode_schedule_2_duration') | int * 60 %}
+          {% set end_time = as_timestamp(start_time) + duration %}
+
+          {{ time_now > as_timestamp(start_time) and time_now < end_time }}
+    action:
+      - service: timer.start
+        data_template:
+          entity_id: timer.guest_mode_schedule_2_duration
+          duration: >
+            {% set time_now = as_timestamp(now()) %}
+            {% set start_time = states('input_datetime.guest_mode_schedule_2_start_time') %}
+            {% set start_time = as_timestamp(now()) | timestamp_custom('%Y-%m-%d') + ' ' + start_time %}
+            {% set duration = states('input_number.guest_mode_schedule_2_duration') | int * 60 %}
+            {% set end_time = as_timestamp(start_time) + duration %}
+            {% set seconds_left = end_time - time_now %}
+            {% set hours_left = seconds_left // 3600  %}
+            {% set minutes_left = (seconds_left - (hours_left * 3600)) // 60 %}
+
+            {{ '%02i' | format(hours_left) }}:{{ '%02i' | format(minutes_left) }}:01
 
 
-#====================
-#=== Input datetimes
-#====================
-input_datetime:
-  guest_mode_schedule_1_start_time:
-    name: Start time
-    has_date: false
-    has_time: true
+  #====================
+  #===
+  #=== Guest Mode Once
+  #===
+  #====================
+  #==================================================
+  #=== Start the Guest Mode once timer
+  #=== 
+  #=== This is allowed when house is in holiday mode
+  #=== to allow it to be turned on from Telegram but
+  #=== in that case when timer is finished it will 
+  #=== then turn on Holiday Mode (Forced)
+  #==================================================
+  - alias: Guest Mode once start timer
+    # initial_state: on
+    trigger:
+      - platform: state
+        entity_id: input_boolean.guest_mode_once
+        to: 'on'
 
-  guest_mode_schedule_2_start_time:
-    name: Start time
-    has_date: false
-    has_time: true
+      - platform: state
+        entity_id: input_number.guest_mode_once_duration
+
+    condition:
+      - condition: state
+        entity_id: input_boolean.guest_mode_once
+        state: 'on'
+
+    action:  
+      # Cancel the timer
+      - service: timer.cancel
+        data_template:
+          entity_id: timer.guest_mode_once_duration
+
+      # Re-start timer with new duration
+      # Note that 00:00:00 doesn't work as a duration so always include one second
+      - service: timer.start
+        data_template:
+          entity_id: timer.guest_mode_once_duration
+          duration: >
+            {% set duration = states('input_number.guest_mode_once_duration') | int %}
+            {% set hours = duration // 60 %}
+            {% set minutes = duration - (hours * 60) %}
+              {{ '%02i' | format(hours) }}:{{ '%02i' | format(minutes) }}:01
 
 
-#===========
-#=== timers
-#===========
-timer:
-  guest_mode_once_duration:
-    name: Time remaining (once)
+  #==============================================================
+  #=== Turn off Guest Mode once when the timer is finished and
+  #=== turn holiday mode back on if it was on when timer started
+  #==============================================================
+  - alias: Guest Mode once timer finished
+    # initial_state: on
+    trigger:
+      - platform: event
+        event_type: timer.finished
+        event_data:
+          entity_id: timer.guest_mode_once_duration
 
-  guest_mode_schedule_1_duration:
-    name: Time remaining (schedule 1)
+    action: 
+      - service: input_boolean.turn_off
+        data:
+          entity_id: input_boolean.guest_mode_once
 
-  guest_mode_schedule_2_duration:
-    name: Time remaining (schedule 2)
 
+  #======================================
+  #=== Turn off Guest Mode once manually
+  #======================================
+  - alias: Guest Mode once off
+    # initial_state: on
+    trigger:
+      - platform: state
+        entity_id: input_boolean.guest_mode_once
+        to: 'off'
+
+    action:
+      - service: timer.finish
+        data_template:
+          entity_id: timer.guest_mode_once_duration
+
+
+  #==========================
+  #===
+  #=== Guest Mode Schedule 1
+  #===
+  #==========================
+  #===========================================
+  #=== Start the scheduled Guest Mode 1 timer
+  #=== If the house is not in holiday mode
+  #=== At the right time
+  #=== If it is the right day
+  #===========================================
+  - alias: Guest Mode schedule 1 start timer
+    # initial_state: on
+    trigger:
+      - platform: template
+        value_template: "{{ states('sensor.time') ~ ':00' == states('input_datetime.guest_mode_schedule_1_start_time') }}"
+
+    condition:
+      - condition: state
+        entity_id: binary_sensor.holiday_mode
+        state: 'off'
+
+      - condition: state
+        entity_id: input_boolean.guest_mode_schedule_1
+        state: 'on'
+
+      - condition: template
+        value_template: "{{ states('input_select.guest_mode_schedule_1_day') == now().strftime('%A') or 
+                            states('input_select.guest_mode_schedule_1_day') == 'Every Day' }}"
+
+    action:  
+      # Cancel the timer
+      - service: timer.cancel
+        data_template:
+          entity_id: timer.guest_mode_schedule_1_duration
+
+      # Re-start timer with new duration
+      # Note that 00:00:00 doesn't work as a duration so always include one second
+      - service: timer.start
+        data_template:
+          entity_id: timer.guest_mode_schedule_1_duration
+          duration: >
+            {% set duration = states('input_number.guest_mode_schedule_1_duration') | int %}
+            {% set hours = duration // 60 %}
+            {% set minutes = duration - (hours * 60) %}
+              {{ '%02i' | format(hours) }}:{{ '%02i' | format(minutes) }}:01
+
+      - service: browser_mod.command
+        data:
+          command: popup
+          title: Guest Mode Schedule 1 has started
+          card:
+            type: entity-filter
+            show_header_toggle: false
+            entities:
+              - timer.guest_mode_once_duration
+              - timer.guest_mode_schedule_1_duration
+              - timer.guest_mode_schedule_2_duration
+            state_filter:
+              - "active"
+          deviceID:
+            - MYPC
+
+
+  #=============================================
+  #=== Turn off scheduled Guest Mode 1 manually
+  #=============================================
+  - alias: Guest Mode schedule 1 off
+    # initial_state: on
+    trigger:
+      - platform: state
+        entity_id: input_boolean.guest_mode_schedule_1
+        to: 'off'
+
+    action:
+      - service: timer.finish
+        data_template:
+          entity_id: timer.guest_mode_schedule_1_duration
+
+
+  #==========================
+  #===
+  #=== Guest Mode Schedule 2
+  #===
+  #==========================
+  #===========================================
+  #=== Start the scheduled Guest Mode 2 timer
+  #=== If the house is not in holiday mode
+  #=== At the right time
+  #=== If it is the right day
+  #===========================================
+  - alias: Guest Mode schedule 2 start timer
+    # initial_state: on
+    trigger:
+      - platform: template
+        value_template: "{{ states('sensor.time') ~ ':00' == states('input_datetime.guest_mode_schedule_2_start_time') }}"
+
+    condition:
+      - condition: state
+        entity_id: binary_sensor.holiday_mode
+        state: 'off'
+
+      - condition: state
+        entity_id: input_boolean.guest_mode_schedule_2
+        state: 'on'
+
+      - condition: template
+        value_template: "{{ states('input_select.guest_mode_schedule_2_day') == now().strftime('%A') or 
+                            states('input_select.guest_mode_schedule_2_day') == 'Every Day' }}"
+
+    action:  
+      # Cancel the timer
+      - service: timer.cancel
+        data_template:
+          entity_id: timer.guest_mode_schedule_2_duration
+
+      # Re-start timer with new duration
+      # Note that 00:00:00 doesn't work as a duration so always include one second
+      - service: timer.start
+        data_template:
+          entity_id: timer.guest_mode_schedule_2_duration
+          duration: >
+            {% set duration = states('input_number.guest_mode_schedule_2_duration') | int %}
+            {% set hours = duration // 60 %}
+            {% set minutes = duration - (hours * 60) %}
+              {{ '%02i' | format(hours) }}:{{ '%02i' | format(minutes) }}:01
+
+      - service: browser_mod.command
+        data:
+          command: popup
+          title: Guest Mode Schedule 2 has started
+          card:
+            type: entity-filter
+            show_header_toggle: false
+            entities:
+              - timer.guest_mode_once_duration
+              - timer.guest_mode_schedule_1_duration
+              - timer.guest_mode_schedule_2_duration
+            state_filter:
+              - "active"
+          deviceID:
+            - MYPC
+
+
+  #=============================================
+  #=== Turn off scheduled Guest Mode 2 manually
+  #=============================================
+  - alias: Guest Mode schedule 2 off
+    # initial_state: on
+    trigger:
+      - platform: state
+        entity_id: input_boolean.guest_mode_schedule_2
+        to: 'off'
+
+    action:
+      - service: timer.finish
+        data_template:
+          entity_id: timer.guest_mode_schedule_2_duration
