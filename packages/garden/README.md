@@ -26,6 +26,10 @@ Smart Weather is a custom component - https://github.com/briis/smartweather
 --------------
 
 ## Changes ##
+*16 August 2019* - Many small changes. Mostly tidying up code and renaming to standardise some items especially automations which shouldn't make any difference but do help when debugging. Also some slight reworking of the weather adjustment code which should be an improvement :-)
+
+If you already use this package please take some care before blindly copying this across I think it might have to be all or nothing if it isn't going to break. If you want to find my 'improvements' they should be easily implemented in your version.
+
 *10 July 2019* - Small change to immediately update the Adjusted Zone Durations whenever the temperature or rain thresholds are changed.
 
 *5 April 2019* - Corrected the logic for updating next run time.
