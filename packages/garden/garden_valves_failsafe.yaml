@@ -17,8 +17,7 @@ automation:
   #=== Master Control Switch
   #=== Turn off valves and schedules when master control switch is off
   #====================================================================
-  - alias: Irrigation Failsafe - master control switch
-    initial_state: on
+  - alias: Irrigation Failsafe - Master Control Switch
     trigger:
     - platform: state
       entity_id: input_boolean.irrigation_master_control_switch
@@ -30,30 +29,8 @@ automation:
     action:
     - service: homeassistant.turn_off
       entity_id:
-        - input_boolean.cycle1_enable
-        - input_boolean.cycle2_enable
         - input_boolean.cycle1_manual_run
         - input_boolean.cycle2_manual_run    
-        - switch.zone1_valve
-        - switch.zone2_valve
-        - switch.zone3_valve
-        - switch.zone4_valve
-        - switch.zone5_valve
-
-
-  #=======================================
-  #=== Home Assistant starts
-  #=== Turn off all valves when HA starts
-  #=======================================
-  - alias: Irrigation Failsafe - HA start
-    initial_state: on
-    trigger:
-    - platform: homeassistant
-      event: start
-
-    action:
-    - service: homeassistant.turn_off
-      entity_id:
         - switch.zone1_valve
         - switch.zone2_valve
         - switch.zone3_valve
@@ -68,8 +45,7 @@ automation:
   #=== Turn off valve 5 if it is on for longer than 59 minutes.
   #==================================================================
   #=== Valve 1 ON
-  - alias: Irrigation Failsafe - Valve 1 on
-    initial_state: on
+  - alias: Irrigation Failsafe - Valve 1 On
     trigger:
     - platform: state
       entity_id:
@@ -92,8 +68,7 @@ automation:
 
 
   #=== Valve 2 ON
-  - alias: Irrigation Failsafe - Valve 2 on
-    initial_state: on
+  - alias: Irrigation Failsafe - Valve 2 On
     trigger:
     - platform: state
       entity_id:
@@ -116,8 +91,7 @@ automation:
 
 
   #=== Valve 3 ON
-  - alias: Irrigation Failsafe - Valve 3 on
-    initial_state: on
+  - alias: Irrigation Failsafe - Valve 3 On
     trigger:
     - platform: state
       entity_id:
@@ -140,8 +114,7 @@ automation:
 
 
   #=== Valve 4 ON
-  - alias: Irrigation Failsafe - Valve 4 on
-    initial_state: on
+  - alias: Irrigation Failsafe - Valve 4 On
     trigger:
     - platform: state
       entity_id:
@@ -164,8 +137,7 @@ automation:
 
 
   #=== Valve 5 ON
-  - alias: Irrigation Failsafe - Valve 5 on
-    initial_state: on
+  - alias: Irrigation Failsafe - Valve 5 On
     trigger:
     - platform: state
       entity_id:
