@@ -12,15 +12,33 @@ script:
     sequence:
 
       - service_template: >
+          {% if is_state('input_boolean.cycle1_use_weather_adjustment', 'off') %}
+            {% set ns = namespace(total_time = 0) %}
+            {% for zone in states if zone.entity_id.startswith('input_number.cycle1_zone') %}
+              {% set ns.total_time = ns.total_time + states(zone.entity_id) | int %}
+            {% endfor %}
+          {% else %}
+            {% set ns = namespace(total_time = 0) %}
+            {% for zone in states if zone.entity_id.startswith('input_number.adjusted_cycle1_zone') %}
+              {% set ns.total_time = ns.total_time + states(zone.entity_id) | int %}
+            {% endfor %}
+          {% endif %}
+
           {% if is_state('input_boolean.irrigation_master_control_switch', 'off') %}
             script.dash_irrigation_not_started
+          {% elif ns.total_time == 0 %}
+            script.dash_irrigation_not_started
           {% elif is_state('input_boolean.cycle1_running', 'off') and 
-                is_state('input_boolean.cycle2_running', 'off') %}
+                  is_state('input_boolean.cycle2_running', 'off') %}
             script.dash_start_irrigation
           {% else %}
             script.dash_stop_irrigation
           {% endif %}
 
+      #=== For some reason the Dash buttons now do the command twice.
+      #=== So put a delay here so that the script is already running
+      #=== if it tries to do so again.
+      - delay: "00:00:30"
 
   #================================================================
   #=== Script to start irrigation cycle 1 when DASH button pressed
@@ -28,42 +46,12 @@ script:
   dash_start_irrigation:
     sequence:
 
-      - wait_template: >
-          {{ is_state('script.announce' , 'off') }}      
-        timeout: '00:00:05'
-
-      #=== Set sonos parameters
-      - service: script.setup_sonos_parameters
-        data:
-          room: kitchen
-          volume: 0.3
-
-      #=== Prepare Sonos devices (Snapshot, Unjoin and set Volume)
-      - service: script.prepare_sonos_devices
-
-      #=== Wait for Sonos devices to be ready
-      - delay: "00:00:01"
-
-      - wait_template: "{{ is_state('script.prepare_sonos_devices', 'off') }}"
-
       #=== Announce irrigation
-      - service: script.announce_irrigation_started
+      - service: script.initiate_announcement_irrigation_start
 
       - service: input_boolean.turn_on
         data:
           entity_id: input_boolean.cycle1_manual_run
-
-      - wait_template: "{{ is_state('script.announce_irrigation_started' , 'on') }}"
-        timeout: '00:00:02'
-
-      - wait_template: "{{ is_state('script.announce_irrigation_started' , 'off') }}"
-
-      #=== Restore Sonos
-      - service: media_player.sonos_restore
-        data_template:
-          entity_id: >
-            {{ 'media_player.' ~ states('input_select.announce_room') }}
-          with_group: 'true'  
 
 
   #========================================================
@@ -86,35 +74,5 @@ script:
   dash_irrigation_not_started:
     sequence:
 
-      - wait_template: >
-          {{ is_state('script.announce' , 'off') }}      
-        timeout: '00:00:05'
-
-      #=== Set sonos parameters
-      - service: script.setup_sonos_parameters
-        data:
-          room: kitchen
-          volume: 0.3
-
-      #=== Prepare Sonos devices (Snapshot, Unjoin and set Volume)
-      - service: script.prepare_sonos_devices
-
-      #=== Wait for Sonos devices to be ready
-      - delay: "00:00:01"
-
-      - wait_template: "{{ is_state('script.prepare_sonos_devices', 'off') }}"
-
-      #=== Announce irrigation
-      - service: script.announce_irrigation_not_started
-
-      - wait_template: "{{ is_state('script.announce_irrigation_not_started' , 'on') }}"
-        timeout: '00:00:02'
-
-      - wait_template: "{{ is_state('script.announce_irrigation_not_started' , 'off') }}"
-
-      #=== Restore Sonos
-      - service: media_player.sonos_restore
-        data_template:
-          entity_id: >
-            {{ 'media_player.' ~ states('input_select.announce_room') }}
-          with_group: 'true'  
+      #=== Announce irrigation not started
+      - service: script.initiate_announcement_irrigation_not_started
