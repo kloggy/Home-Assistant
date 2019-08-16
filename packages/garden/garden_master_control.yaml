@@ -16,8 +16,7 @@ automation:
   #===
   #=== Also checks when HA starts.
   #====================================================================
-  - alias: Irrigation Master Control Switch
-    initial_state: 'on'
+  - alias: Irrigation - Master Control Switch
     trigger:
       - platform: state
         entity_id: input_boolean.irrigation_master_control_switch
@@ -26,7 +25,14 @@ automation:
         event: start
 
     action:
-      #=== Turn all Irrigation automations on or off
+      #=== Stop both cycles
+      - service: input_boolean.turn_off
+        data:
+          entity_id: 
+            - input_boolean.cycle1_manual_run
+            - input_boolean.cycle2_manual_run
+
+      #=== Turn all Irrigation automations on or off (EXCEPT this one!)
       - service_template: >
           {% if is_state('input_boolean.irrigation_master_control_switch', 'on') %}
             automation.turn_on
@@ -35,7 +41,8 @@ automation:
           {% endif %}
         data_template:
           entity_id: >
-            {% for item in states['automation'] if item.name.startswith('Irrigation - ') -%}
+            {% for item in states['automation'] if item.name.startswith('Irrigation - ') and
+                                                   item.name.find('Master Control Switch') == -1 -%}
               {% if not loop.first %},{% endif %}{{ item.entity_id }}
             {%- endfor %}
 
