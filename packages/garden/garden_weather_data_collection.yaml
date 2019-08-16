@@ -38,17 +38,31 @@ input_number:
     name: Avg 2 day temp
     min: 0
     max: 40
-    mode: box
     icon: mdi:thermometer
 
   temp_high_5days:
     name: Avg 5 day temp
     min: 0
     max: 40
+    icon: mdi:thermometer
+
+  temp_2days_multiplyer:
+    name: Last 2 days Temperature Multiplyer
+    min: 0
+    max: 10
+    step: 0.01
     mode: box
     icon: mdi:thermometer
 
+  temp_5days_multiplyer:
+    name: Last 5 days Temperature Multiplyer
+    min: 0
+    max: 10
+    step: 0.01
+    mode: box
+    icon: mdi:thermometer
 
+    
   # Rainfall
   rain_minus0:
     name: Rain today
@@ -81,7 +95,7 @@ input_number:
     mode: box
     icon: mdi:weather-rainy
 
-  rain_3days_ratio:
+  rain_3days_multiplier:
     name: Last 3 days rain adj
     min: 0
     max: 100
@@ -94,6 +108,79 @@ input_number:
 #=== Sensors
 #============
 sensor:
+
+  #===================================
+  #=== SmartWeather Rain Today
+  #=== (Based on sensor.smartweather
+  #=== as defined in almanac_weather) 
+  #===================================
+  - platform: template
+    sensors:
+      smartweather_rain_today:
+        value_template: >
+          {% if states('sensor.smartweather').split(':')[1] == 'unknown' %}
+            {{ states('sensor.smartweather_rain_today') }}
+          {% else %}
+            {{ states('sensor.smartweather').split(':')[1] | round(1) }}
+          {% endif %}
+
+  #===================================
+  #=== SmartWeather Rain yesterday 
+  #=== (Based on sensor.smartweather
+  #=== as defined in almanac_weather) 
+  #===================================
+  - platform: template
+    sensors:
+      smartweather_rain_yesterday:
+        value_template: >
+          {% if states('sensor.smartweather').split(':')[2] == 'unknown' %}
+            {{ states('sensor.smartweather_rain_yesterday') }}
+          {% else %}
+            {{ states('sensor.smartweather').split(':')[2]  | round(1) }}
+          {% endif %}
+
+  # #============================
+  # #=== SmartWeather Rain Today 
+  # #============================
+  # - platform: rest
+  #   resource: http://swd.weatherflow.com/swd/rest/observations/station/5306?api_key=20c70eae-e62f-4d3b-b3a4-8586e90f3ac8
+  #   name: smartweather_rain_today
+  #   value_template: >
+  #     {% if not value_json is defined %}
+  #        no json returned
+  #     {% elif 'obs' not in value_json %}
+  #        obs not defined
+  #     {% elif value_json.obs | length < 1 %}
+  #        no data in obs
+  #     {% elif 'precip_accum_local_day' not in value_json.obs[0] %}
+  #        no brightness returned
+  #     {% else %}
+  #       {{ value_json.obs[0].precip_accum_local_day  | round(1) }}
+  #     {% endif %}
+  #   scan_interval:
+  #     minutes: 10
+
+  # #================================
+  # #=== SmartWeather Rain yesterday 
+  # #================================
+  # - platform: rest
+  #   resource: http://swd.weatherflow.com/swd/rest/observations/station/5306?api_key=20c70eae-e62f-4d3b-b3a4-8586e90f3ac8
+  #   name: smartweather_rain_yesterday
+  #   value_template: >
+  #     {% if not value_json is defined %}
+  #        no json returned
+  #     {% elif 'obs' not in value_json %}
+  #        obs not defined
+  #     {% elif value_json.obs | length < 1 %}
+  #        no data in obs
+  #     {% elif 'precip_accum_local_yesterday' not in value_json.obs[0] %}
+  #        no brightness returned
+  #     {% else %}
+  #       {{ value_json.obs[0].precip_accum_local_yesterday  | round(1) }}
+  #     {% endif %}
+  #   scan_interval: 86400
+
+
   - platform: template
     sensors:
       # Weather information sensors
@@ -133,6 +220,14 @@ sensor:
         value_template: "{{ states('input_number.temp_high_5days') }}"     
         unit_of_measurement: "°C"
 
+      temp_2days_multiplyer:
+        friendly_name: Last 2 days temperature multiplyer
+        value_template: "{{ states('input_number.temp_2days_multiplyer') }}"     
+
+      temp_5days_multiplyer:
+        friendly_name: Last 5 days temperature multiplyer
+        value_template: "{{ states('input_number.temp_5days_multiplyer') }}"     
+
 
       # Rainfall
       # rain_minus0:
@@ -160,9 +255,9 @@ sensor:
         value_template: "{{ states('input_number.rain_minus3') }}"     
         unit_of_measurement: "mm"
 
-      rain_3days_ratio:
+      rain_3days_multiplier:
         friendly_name: Last 3 days rain adj. multiplyer
-        value_template: "{{ states('input_number.rain_3days_ratio') }}"     
+        value_template: "{{ states('input_number.rain_3days_multiplier') }}"     
 
 
 #=================
@@ -173,11 +268,11 @@ automation:
   #================================================
   #=== Collect new and cycle historic weather data
   #================================================
-  - alias: Irrigation Weather Data - Collect new and cycle historic weather data
-    initial_state: 'on'
+  - alias: Irrigation Weather Data - Collect New And Cycle Historic Weather Data
+    # initial_state: on
     trigger:
       - platform: time
-        at: '01:00:00'
+        at: '06:00:00'
 
     action:
       # These scripts pass the count of entities but in this case as I 
@@ -193,6 +288,10 @@ automation:
             {% endfor %}
             {{ (ns.count - 1) }}
 
+      # Update yesterdays rainfall
+      - service: homeassistant.update_entity
+        entity_id: sensor.smartweather_rain_yesterday
+
       # Cycle the rainfall figures
       - service: script.garden_rainfall_data
         data_template:
@@ -203,15 +302,6 @@ automation:
             {% endfor %}
             {{ (ns.count - 1) }}
 
-###### EXTRA AUTOMATION NEEDED HERE
-###### TO COLLECT RAINFALL DATA EVERY HOUR
-###### INTO input_number.rain_minus0
-###### USING sensor.smartweather_precpitation_last_1hr
-######
-###### This could be done before irrigation starts by
-###### by using sensor.smartweather_rain_today if
-###### weather adjustments are being made as it is not
-###### needed for cycling the history
 
 #=============
 # === Scripts
@@ -229,7 +319,7 @@ script:
       # e.g. input_number.temp_minus4
 
       # Setting the temperature for today:
-      # DarkSky dark_sky_forecast_temperature_high_0 is used as the high temperature.
+      # DarkSky dark_sky_forecast_temperature_high_0d is used as the high temperature.
 
       # ===== THIS NEEDS TO BE LOOKED AT
       # The average weather calculations happen every 30 mins and will
@@ -292,7 +382,6 @@ script:
       # e.g. input_number.rain_minus3
 
       # Now using sensor.smartweather_rain_yesterday
-      # Make todays rain zero
 
       - service: input_number.set_value
         data_template:
@@ -300,7 +389,7 @@ script:
             input_number.rain_minus{{ loop_count }}
           value: >
             {% if loop_count | int == 0 %}
-              0 
+              {{ states('sensor.smartweather_rain_today') }} 
             {% elif loop_count | int == 1 %}
               {{ states('sensor.smartweather_rain_yesterday') }} 
             {% else %}
