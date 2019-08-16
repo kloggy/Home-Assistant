@@ -1,13 +1,8 @@
-#================================
-#===
-#=== GARDEN
-#===
-#================================
+
 title: Garden
+path: garden
 icon: mdi:flower
 cards:
-
-  - type: custom:compact-custom-header
 
   #==========================
   #=== Master Control Switch
@@ -17,7 +12,9 @@ cards:
 
       - type: picture-entity
         entity: input_boolean.irrigation_master_control_switch
-        image: /local/lovelace/lawn-sprinkler.jpg
+#        image: /local/lovelace/sprinklers.jpg
+#        image: /local/lovelace/lawn-sprinkler.jpg
+        image: /local/lovelace/lawn-sprinkler2.jpg
         tap_action: 
           action: toggle
 
@@ -32,19 +29,88 @@ cards:
             #=== Manual control buttons
             - type: horizontal-stack
               cards:
-                - type: custom:toggle-lock-entity-row
-#                - type: entity-button
+
+                #=== Morning Cycle
+                - type: custom:button-card
+#                  icon: mdi:play-box-outline
                   entity: input_boolean.cycle1_manual_run
+                  lock: true
                   name: Morning Cycle
                   tap_action:
                     action: toggle
+                  size: 15%
+                  color_type: card
+                  styles:
+                    card:
+                      - border-radius: 15px
+                      - border-style: solid
+                      - border-width: 1px
+                      - border-color: '#e5e5e5'
+                      - --paper-card-background-color: rgba(20, 20, 20, 0.4)
+                      - white-space: nowrap
+                    lock:
+                      - color: red
+                  state:
+                    - value: 'off'
+                      name: Start Morning Cycle
+                      color: rgba(20, 20, 20, 0.4)
+                      icon: mdi:play-circle-outline
 
-                - type: custom:toggle-lock-entity-row
-#                - type: entity-button
+                    - value: 'on'
+                      name: Stop Morning Cycle
+                      color: green
+                      icon: mdi:fountain
+                      styles:
+                        card:
+                          - animation: blink 2s ease infinite
+                          - white-space: nowrap
+
+                #=== Afternoon Cycle
+                - type: custom:button-card
                   entity: input_boolean.cycle2_manual_run
+                  lock: true
                   name: Afternoon Cycle
                   tap_action:
                     action: toggle
+                  size: 15%
+                  color_type: card
+                  styles:
+                    card:
+                      - border-radius: 15px
+                      - border-style: solid
+                      - border-width: 1px
+                      - border-color: '#e5e5e5'
+                      - --paper-card-background-color: rgba(20, 20, 20, 0.4)
+                      - white-space: nowrap
+                    lock:
+                      - color: red
+                  state:
+                    - value: 'off'
+                      name: Start Afternoon Cycle
+                      color: rgba(20, 20, 20, 0.4)
+                      icon: mdi:play-circle-outline
+
+                    - value: 'on'
+                      name: Stop Afternoon Cycle
+                      color: green
+                      icon: mdi:fountain
+                      style:
+                        card:
+                          - animation: blink 2s ease infinite
+                          - white-space: nowrap
+
+
+#                 - type: custom:toggle-lock-entity-row
+#                   entity: input_boolean.cycle1_manual_run
+#                   name: Morning Cycle
+#                   tap_action:
+#                     action: toggle
+
+#                 - type: custom:toggle-lock-entity-row
+#                   entity: input_boolean.cycle2_manual_run
+#                   name: Afternoon Cycle
+#                   tap_action:
+#                     action: toggle
 
             #=== Valve information
             - type: 'custom:config-template-card'
@@ -74,38 +140,35 @@ cards:
                     icon: mdi:engine
                   - entity: sensor.zone1to4_valve
                     name: ''
-                    icon: "${vars[0] >= 100 ? 'mdi:wifi' : vars[0] >= 80 ? 'mdi:wifi-strength-3' : vars[0] >= 60 ? 'mdi:wifi-strength-2' : vars[0] > 0 ? 'mdi:wifi-strength-1' : 'mdi:wifi-off' }"
+                    icon: "${vars[0] >= 90 ? 'mdi:wifi' : vars[0] >= 60 ? 'mdi:wifi-strength-3' : vars[0] >= 30 ? 'mdi:wifi-strength-2' : vars[0] > 0 ? 'mdi:wifi-strength-1' : 'mdi:wifi-off' }"
                   - entity: sensor.zone1to4_valve
                     name: ''
-                    icon: "${vars[0] >= 100 ? 'mdi:wifi' : vars[0] >= 80 ? 'mdi:wifi-strength-3' : vars[0] >= 60 ? 'mdi:wifi-strength-2' : vars[0] > 0 ? 'mdi:wifi-strength-1' : 'mdi:wifi-off' }"
+                    icon: "${vars[0] >= 90 ? 'mdi:wifi' : vars[0] >= 60 ? 'mdi:wifi-strength-3' : vars[0] >= 30 ? 'mdi:wifi-strength-2' : vars[0] > 0 ? 'mdi:wifi-strength-1' : 'mdi:wifi-off' }"
                   - entity: sensor.zone1to4_valve
                     name: ''
-                    icon: "${vars[0] >= 100 ? 'mdi:wifi' : vars[0] >= 80 ? 'mdi:wifi-strength-3' : vars[0] >= 60 ? 'mdi:wifi-strength-2' : vars[0] > 0 ? 'mdi:wifi-strength-1' : 'mdi:wifi-off' }"
+                    icon: "${vars[0] >= 90 ? 'mdi:wifi' : vars[0] >= 60 ? 'mdi:wifi-strength-3' : vars[0] >= 30 ? 'mdi:wifi-strength-2' : vars[0] > 0 ? 'mdi:wifi-strength-1' : 'mdi:wifi-off' }"
                   - entity: sensor.zone1to4_valve
                     name: ''
-                    icon: "${vars[0] >= 100 ? 'mdi:wifi' : vars[0] >= 80 ? 'mdi:wifi-strength-3' : vars[0] >= 60 ? 'mdi:wifi-strength-2' : vars[0] > 0 ? 'mdi:wifi-strength-1' : 'mdi:wifi-off' }"
+                    icon: "${vars[0] >= 90 ? 'mdi:wifi' : vars[0] >= 60 ? 'mdi:wifi-strength-3' : vars[0] >= 30 ? 'mdi:wifi-strength-2' : vars[0] > 0 ? 'mdi:wifi-strength-1' : 'mdi:wifi-off' }"
                   - entity: sensor.zone5_valve
                     name: ''
-                    icon: "${vars[1] >= 100 ? 'mdi:wifi' : vars[1] >= 80 ? 'mdi:wifi-strength-3' : vars[1] >= 60 ? 'mdi:wifi-strength-2' : vars[1] > 0 ? 'mdi:wifi-strength-1' : 'mdi:wifi-off' }"
+                    icon: "${vars[1] >= 90 ? 'mdi:wifi' : vars[1] >= 60 ? 'mdi:wifi-strength-3' : vars[1] >= 30 ? 'mdi:wifi-strength-2' : vars[1] > 0 ? 'mdi:wifi-strength-1' : 'mdi:wifi-off' }"
 
             #=== Temperature and Rainfall
             - type: entities
-              title: Temperature and Rainfall
+              title: '-- Temperature and Rainfall --'
               show_header_toggle: false
               entities:
-                - input_number.temperature_baseline
-                - input_number.rainfall_threshold
                 - type: custom:fold-entity-row
-                  head: 
-                    type: section
-                    label: Weather History
+                  head: input_number.temperature_baseline
                   items:
-                    - type: section
-                      label: Temperature
-
                     - entity: sensor.temp_high_2days
                       icon: mdi:thermometer
+                    - entity: sensor.temp_2days_multiplyer
+                      icon: mdi:thermometer
                     - entity: sensor.temp_high_5days
+                      icon: mdi:thermometer
+                    - entity: sensor.temp_5days_multiplyer
                       icon: mdi:thermometer
 
                     - type: divider
@@ -123,10 +186,10 @@ cards:
                     - entity: sensor.temp_minus4
                       icon: mdi:thermometer
 
-                    - type: section
-                      label: Rainfall
-
-                    - entity: sensor.rain_3days_ratio
+                - type: custom:fold-entity-row
+                  head: input_number.rainfall_threshold
+                  items:
+                    - entity: sensor.rain_3days_multiplier
                       icon: mdi:weather-rainy
 
                     - type: divider
@@ -144,7 +207,7 @@ cards:
 
             #=== Irrigation History
             - type: entities
-              title: Irrigation History
+              title: '-- Irrigation History --'
               show_header_toggle: false
               entities:
                 - type: custom:fold-entity-row
@@ -173,7 +236,7 @@ cards:
     card:
       #=== Morning Cycle details
       type: entities
-      title: Morning Cycle
+      title: '-- Morning Cycle --'
       show_header_toggle: false
       entities:
         - sensor.cycle1_running
@@ -196,7 +259,11 @@ cards:
               icon: mdi:clock-start
             - input_select.cycle1_schedule_time
             - input_select.cycle1_watering_days
-
+            - type: divider
+              style:
+                height: 10px
+            - type: divider
+ 
         #=== Morning Weather Adjustment details
         - type: custom:fold-entity-row
           head: 
@@ -223,7 +290,7 @@ cards:
     card:
       #=== Afternoon Cycle details
       type: entities
-      title: Afternoon Cycle
+      title: '-- Afternoon Cycle --'
       show_header_toggle: false
       entities:
         - sensor.cycle2_running
@@ -246,6 +313,10 @@ cards:
               icon: mdi:clock-start
             - input_select.cycle2_schedule_time
             - input_select.cycle2_watering_days
+            - type: divider
+              style:
+                height: 10px
+            - type: divider
 
         #=== Afternoon Weather Adjustment details
         - type: custom:fold-entity-row
@@ -262,4 +333,6 @@ cards:
               icon: mdi:camera-timer
             - entity: sensor.cycle2_zone5_duration_adjusted
               icon: mdi:camera-timer
+
+
 
