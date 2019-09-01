@@ -26,6 +26,10 @@ Smart Weather is a custom component - https://github.com/briis/smartweather
 --------------
 
 ## Changes ##
+*1 September 2019* - A complete re-upload of my files as it appears that there may have been some errors/inconsistencies which crept in due to me using GitHub only as a way to make my files public rather than as any kind of master repository or version control.
+
+Also my new Lovelace Garden view which I think is an improvement.
+
 *16 August 2019* - Many small changes. Mostly tidying up code and renaming to standardise some items especially automations which shouldn't make any difference but do help when debugging. Also some slight reworking of the weather adjustment code which should be an improvement :-)
 
 If you already use this package please take some care before blindly copying this across I think it might have to be all or nothing if it isn't going to break. If you want to find my 'improvements' they should be easily implemented in your version.
