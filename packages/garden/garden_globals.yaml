@@ -365,87 +365,87 @@ sensor:
       zone1_time_today:
         friendly_name: Zone 1 total watering time today
         value_template: >
-          {% set duration = states('sensor.zone1_time') %}
-          {{ duration|float|multiply(60)|round }}
+          {% set duration = states('sensor.zone1_time') | float %}
+          {{ (duration * 60) | round(1) }}
         unit_of_measurement: mins
 
       zone2_time_today:
         friendly_name: Zone 2 total watering time today
         value_template: >
-          {% set duration = states('sensor.zone2_time') %}
-          {{ duration|float|multiply(60)|round }}
+          {% set duration = states('sensor.zone2_time') | float %}
+          {{ (duration * 60) | round(1) }}
         unit_of_measurement: mins
         
       zone3_time_today:
         friendly_name: Zone 3 total watering time today
         value_template: >
-          {% set duration = states('sensor.zone3_time') %}
-          {{ duration|float|multiply(60)|round }}
+          {% set duration = states('sensor.zone3_time') | float %}
+          {{ (duration * 60) | round(1) }}
         unit_of_measurement: mins
         
       zone4_time_today:
         friendly_name: Zone 4 total watering time today
         value_template: >
-          {% set duration = states('sensor.zone4_time') %}
-          {{ duration|float|multiply(60)|round }}
+          {% set duration = states('sensor.zone4_time') | float %}
+          {{ (duration * 60) | round(1) }}
         unit_of_measurement: mins
         
       zone5_time_today:
         friendly_name: Zone 5 total watering time today
         value_template: >
-          {% set duration = states('sensor.zone5_time') %}
-          {{ duration|float|multiply(60)|round }}
+          {% set duration = states('sensor.zone5_time') | float %}
+          {{ (duration * 60) | round(1) }}
         unit_of_measurement: mins
         
 
       cycle1_zone1_duration_adjusted:
         friendly_name: "Zone 1 adjusted duration"
-        value_template: "{{ states('input_number.adjusted_cycle1_zone1_duration') | int }}"     
+        value_template: "{{ states('input_number.adjusted_cycle1_zone1_duration') | round(1) }}"     
         unit_of_measurement: mins
 
       cycle1_zone2_duration_adjusted:
         friendly_name: "Zone 2 adjusted duration"
-        value_template: "{{ states('input_number.adjusted_cycle1_zone2_duration') | int }}"     
+        value_template: "{{ states('input_number.adjusted_cycle1_zone2_duration') | round(1) }}"     
         unit_of_measurement: mins
 
       cycle1_zone3_duration_adjusted:
         friendly_name: "Zone 3 adjusted duration"
-        value_template: "{{ states('input_number.adjusted_cycle1_zone3_duration') | int }}"     
+        value_template: "{{ states('input_number.adjusted_cycle1_zone3_duration') | round(1) }}"     
         unit_of_measurement: mins
 
       cycle1_zone4_duration_adjusted:
         friendly_name: "Zone 4 adjusted duration"
-        value_template: "{{ states('input_number.adjusted_cycle1_zone4_duration') | int }}"     
+        value_template: "{{ states('input_number.adjusted_cycle1_zone4_duration') | round(1) }}"     
         unit_of_measurement: mins
 
       cycle1_zone5_duration_adjusted:
         friendly_name: "Zone 5 adjusted duration"
-        value_template: "{{ states('input_number.adjusted_cycle1_zone5_duration') | int }}"     
+        value_template: "{{ states('input_number.adjusted_cycle1_zone5_duration') | round(1) }}"     
         unit_of_measurement: mins
 
       cycle2_zone1_duration_adjusted:
         friendly_name: "Zone 1 adjusted duration"
-        value_template: "{{ states('input_number.adjusted_cycle2_zone1_duration') | int }}"     
+        value_template: "{{ states('input_number.adjusted_cycle2_zone1_duration') | round(1) }}"     
         unit_of_measurement: mins
 
       cycle2_zone2_duration_adjusted:
         friendly_name: "Zone 2 adjusted duration"
-        value_template: "{{ states('input_number.adjusted_cycle2_zone2_duration') | int }}"     
+        value_template: "{{ states('input_number.adjusted_cycle2_zone2_duration') | round(1) }}"     
         unit_of_measurement: mins
 
       cycle2_zone3_duration_adjusted:
         friendly_name: "Zone 3 adjusted duration"
-        value_template: "{{ states('input_number.adjusted_cycle2_zone3_duration') | int }}"     
+        value_template: "{{ states('input_number.adjusted_cycle2_zone3_duration') | round(1) }}"     
         unit_of_measurement: mins
 
       cycle2_zone4_duration_adjusted:
         friendly_name: "Zone 4 adjusted duration"
-        value_template: "{{ states('input_number.adjusted_cycle2_zone4_duration') | int }}"     
+        value_template: "{{ states('input_number.adjusted_cycle2_zone4_duration') | round(1) }}"     
         unit_of_measurement: mins
 
       cycle2_zone5_duration_adjusted:
         friendly_name: "Zone 5 adjusted duration"
-        value_template: "{{ states('input_number.adjusted_cycle2_zone5_duration') | int }}"     
+        value_template: "{{ states('input_number.adjusted_cycle2_zone5_duration') | round(1) }}"     
         unit_of_measurement: mins
 
   # History sensors
