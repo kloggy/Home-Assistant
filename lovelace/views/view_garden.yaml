@@ -26,92 +26,6 @@ cards:
           type: vertical-stack
           cards:
 
-            #=== Manual control buttons
-            - type: horizontal-stack
-              cards:
-
-                #=== Morning Cycle
-                - type: custom:button-card
-#                  icon: mdi:play-box-outline
-                  entity: input_boolean.cycle1_manual_run
-                  lock: true
-                  name: Morning Cycle
-                  tap_action:
-                    action: toggle
-                  size: 15%
-                  color_type: card
-                  styles:
-                    card:
-                      - border-radius: 15px
-                      - border-style: solid
-                      - border-width: 1px
-                      - border-color: '#e5e5e5'
-                      - --paper-card-background-color: rgba(20, 20, 20, 0.4)
-                      - white-space: nowrap
-                    lock:
-                      - color: red
-                  state:
-                    - value: 'off'
-                      name: Start Morning Cycle
-                      color: rgba(20, 20, 20, 0.4)
-                      icon: mdi:play-circle-outline
-
-                    - value: 'on'
-                      name: Stop Morning Cycle
-                      color: green
-                      icon: mdi:fountain
-                      styles:
-                        card:
-                          - animation: blink 2s ease infinite
-                          - white-space: nowrap
-
-                #=== Afternoon Cycle
-                - type: custom:button-card
-                  entity: input_boolean.cycle2_manual_run
-                  lock: true
-                  name: Afternoon Cycle
-                  tap_action:
-                    action: toggle
-                  size: 15%
-                  color_type: card
-                  styles:
-                    card:
-                      - border-radius: 15px
-                      - border-style: solid
-                      - border-width: 1px
-                      - border-color: '#e5e5e5'
-                      - --paper-card-background-color: rgba(20, 20, 20, 0.4)
-                      - white-space: nowrap
-                    lock:
-                      - color: red
-                  state:
-                    - value: 'off'
-                      name: Start Afternoon Cycle
-                      color: rgba(20, 20, 20, 0.4)
-                      icon: mdi:play-circle-outline
-
-                    - value: 'on'
-                      name: Stop Afternoon Cycle
-                      color: green
-                      icon: mdi:fountain
-                      style:
-                        card:
-                          - animation: blink 2s ease infinite
-                          - white-space: nowrap
-
-
-#                 - type: custom:toggle-lock-entity-row
-#                   entity: input_boolean.cycle1_manual_run
-#                   name: Morning Cycle
-#                   tap_action:
-#                     action: toggle
-
-#                 - type: custom:toggle-lock-entity-row
-#                   entity: input_boolean.cycle2_manual_run
-#                   name: Afternoon Cycle
-#                   tap_action:
-#                     action: toggle
-
             #=== Valve information
             - type: 'custom:config-template-card'
               entities:
@@ -129,14 +43,19 @@ cards:
                 type: 'custom:hui-glance-card'
                 entities:
                   - entity: switch.zone1_valve
+                    name: Zone 1
                     icon: mdi:engine
                   - entity: switch.zone2_valve
+                    name: Zone 2
                     icon: mdi:engine
                   - entity: switch.zone3_valve
+                    name: Zone 3
                     icon: mdi:engine
                   - entity: switch.zone4_valve
+                    name: Zone 4
                     icon: mdi:engine
                   - entity: switch.zone5_valve
+                    name: Zone 5
                     icon: mdi:engine
                   - entity: sensor.zone1to4_valve
                     name: ''
@@ -161,14 +80,9 @@ cards:
               entities:
                 - type: custom:fold-entity-row
                   head: input_number.temperature_baseline
+                  # open: true
                   items:
-                    - entity: sensor.temp_high_2days
-                      icon: mdi:thermometer
                     - entity: sensor.temp_2days_multiplyer
-                      icon: mdi:thermometer
-                    - entity: sensor.temp_high_5days
-                      icon: mdi:thermometer
-                    - entity: sensor.temp_5days_multiplyer
                       icon: mdi:thermometer
 
                     - type: divider
@@ -179,19 +93,29 @@ cards:
                       icon: mdi:thermometer
                     - entity: sensor.temp_minus1
                       icon: mdi:thermometer
-                    - entity: sensor.temp_minus2
+                    # - entity: sensor.temp_minus2
+                    #   icon: mdi:thermometer
+                    # - entity: sensor.temp_minus3
+                    #   icon: mdi:thermometer
+                    # - entity: sensor.temp_minus4
+                    #   icon: mdi:thermometer
+
+                    - entity: sensor.temp_high_2days
                       icon: mdi:thermometer
-                    - entity: sensor.temp_minus3
-                      icon: mdi:thermometer
-                    - entity: sensor.temp_minus4
-                      icon: mdi:thermometer
+                    # - entity: sensor.temp_high_5days
+                    #   icon: mdi:thermometer
+                    # - entity: sensor.temp_5days_multiplyer
+                    #   icon: mdi:thermometer
 
                 - type: custom:fold-entity-row
                   head: input_number.rainfall_threshold
+                  # open: true
                   items:
                     - entity: sensor.rain_3days_multiplier
                       icon: mdi:weather-rainy
-
+                    - entity: input_number.rain_percent_minus1
+                    - entity: input_number.rain_percent_minus2
+                    - entity: input_number.rain_percent_minus3
                     - type: divider
                       style:
                         height: 15px
@@ -234,51 +158,113 @@ cards:
       - entity: input_boolean.irrigation_master_control_switch
         state: 'on'
     card:
-      #=== Morning Cycle details
-      type: entities
-      title: '-- Morning Cycle --'
-      show_header_toggle: false
-      entities:
-        - sensor.cycle1_running
-        - entity: sensor.cycle1_zone_being_watered
-          icon: mdi:fountain
-        - timer.cycle1_zone_duration
-        - input_number.cycle1_zone1_duration
-        - input_number.cycle1_zone2_duration
-        - input_number.cycle1_zone3_duration
-        - input_number.cycle1_zone4_duration
-        - input_number.cycle1_zone5_duration
 
-        #=== Morning Schedule details
-        - type: custom:fold-entity-row
-          head: 
-            type: custom:toggle-lock-entity-row
-            entity: input_boolean.cycle1_enable
-          items:
-            - entity: sensor.cycle1_next_run_time
-              icon: mdi:clock-start
-            - input_select.cycle1_schedule_time
-            - input_select.cycle1_watering_days
-            - type: divider
-              style:
-                height: 10px
-            - type: divider
- 
-        #=== Morning Weather Adjustment details
-        - type: custom:fold-entity-row
-          head: 
-            entity: input_boolean.cycle1_use_weather_adjustment
-          items:
-            - entity: sensor.cycle1_zone1_duration_adjusted
-              icon: mdi:camera-timer
-            - entity: sensor.cycle1_zone2_duration_adjusted
-              icon: mdi:camera-timer
-            - entity: sensor.cycle1_zone3_duration_adjusted
-              icon: mdi:camera-timer
-            - entity: sensor.cycle1_zone4_duration_adjusted
-              icon: mdi:camera-timer
-            - entity: sensor.cycle1_zone5_duration_adjusted
-              icon: mdi:camera-timer
+      type: custom:vertical-stack-in-card
+      cards:
+
+        - type: horizontal-stack
+          cards:
+            - type: custom:button-card
+              label: "-- Morning Cycle --"
+              show_name: false
+              show_icon: false
+              show_label: true
+              styles:
+                card:
+                  - height: 50px
+        #                - background: linear-gradient(to right, rgba(255,255,20,0.45) 0%,rgba(255,255,20,0.3) 60%,rgba(255,255,20,0) 85%)
+#                  - background: linear-gradient(to right, var(--paper-card-background-color) 0%, rgba(255,255,255,0.55) 60%, rgba(255,255,255,0) 90%)
+                  - --ha-card-box-shadow: 'none'
+                label:
+                  - justify-self: start
+                  - padding-left: 20px
+                  - font-size: 18pt
+
+            # - type: custom:button-card
+            #   color_type: blank-card
+            #   styles:
+            #     card:
+            #       - width: 2px
+
+            - type: custom:button-card
+              icon: mdi:play-circle-outline
+              show_name: false
+              size: 100%
+              entity: input_boolean.cycle1_manual_run
+              lock: true
+              tap_action:
+                action: toggle
+              styles:
+                card:
+                  - border-radius: 50%
+                  - height: 40px
+                  - width: 90px
+#                  - background: rgba(255,255,255,0.45)
+                  - top: 8px
+                lock:
+                  - color: var(--primary-text-color)
+                icon:
+#                  - color: gray
+                  - width: 35px
+              state:
+                - value: 'off'
+#                  color: rgba(20, 20, 20, 0.4)
+                  icon: mdi:play-circle-outline
+
+                - value: 'on'
+                  color: green
+                  icon: mdi:fountain
+                  # style:
+                  #   card:
+                  #     - animation: blink 2s ease infinite
+                  #     - white-space: nowrap
+
+        #=== Morning Cycle details
+        - type: entities
+#          title: '-- Morning Cycle --'
+          show_header_toggle: false
+          entities:
+            - sensor.cycle1_running
+            - entity: sensor.cycle1_zone_being_watered
+              icon: mdi:fountain
+            - timer.cycle1_zone_duration
+            - input_number.cycle1_zone1_duration
+            - input_number.cycle1_zone2_duration
+            - input_number.cycle1_zone3_duration
+            - input_number.cycle1_zone4_duration
+            - input_number.cycle1_zone5_duration
+
+            #=== Morning Schedule details
+            - type: custom:fold-entity-row
+              head: 
+                type: custom:toggle-lock-entity-row
+                entity: input_boolean.cycle1_enable
+              items:
+                - entity: sensor.cycle1_next_run_time
+                  icon: mdi:clock-start
+                - input_select.cycle1_schedule_time
+                - input_select.cycle1_watering_days
+                - type: divider
+                  style:
+                    height: 10px
+                - type: divider
+    
+            #=== Morning Weather Adjustment details
+            - type: custom:fold-entity-row
+              open: true
+              head: 
+                entity: input_boolean.cycle1_use_weather_adjustment
+              items:
+                - entity: sensor.cycle1_zone1_duration_adjusted
+                  icon: mdi:camera-timer
+                - entity: sensor.cycle1_zone2_duration_adjusted
+                  icon: mdi:camera-timer
+                - entity: sensor.cycle1_zone3_duration_adjusted
+                  icon: mdi:camera-timer
+                - entity: sensor.cycle1_zone4_duration_adjusted
+                  icon: mdi:camera-timer
+                - entity: sensor.cycle1_zone5_duration_adjusted
+                  icon: mdi:camera-timer
 
   #====================
   #=== Afternoon Cycle
@@ -288,51 +274,112 @@ cards:
       - entity: input_boolean.irrigation_master_control_switch
         state: 'on'
     card:
-      #=== Afternoon Cycle details
-      type: entities
-      title: '-- Afternoon Cycle --'
-      show_header_toggle: false
-      entities:
-        - sensor.cycle2_running
-        - entity: sensor.cycle2_zone_being_watered
-          icon: mdi:fountain
-        - timer.cycle2_zone_duration
-        - input_number.cycle2_zone1_duration
-        - input_number.cycle2_zone2_duration
-        - input_number.cycle2_zone3_duration
-        - input_number.cycle2_zone4_duration
-        - input_number.cycle2_zone5_duration
 
-        #=== Afternoon Schedule details
-        - type: custom:fold-entity-row
-          head: 
-            type: custom:toggle-lock-entity-row
-            entity: input_boolean.cycle2_enable
-          items:
-            - entity: sensor.cycle2_next_run_time
-              icon: mdi:clock-start
-            - input_select.cycle2_schedule_time
-            - input_select.cycle2_watering_days
-            - type: divider
-              style:
-                height: 10px
-            - type: divider
+      type: custom:vertical-stack-in-card
+      cards:
 
-        #=== Afternoon Weather Adjustment details
-        - type: custom:fold-entity-row
-          head: 
-            entity: input_boolean.cycle2_use_weather_adjustment
-          items:
-            - entity: sensor.cycle2_zone1_duration_adjusted
-              icon: mdi:camera-timer
-            - entity: sensor.cycle2_zone2_duration_adjusted
-              icon: mdi:camera-timer
-            - entity: sensor.cycle2_zone3_duration_adjusted
-              icon: mdi:camera-timer
-            - entity: sensor.cycle2_zone4_duration_adjusted
-              icon: mdi:camera-timer
-            - entity: sensor.cycle2_zone5_duration_adjusted
-              icon: mdi:camera-timer
+        - type: horizontal-stack
+          cards:
+            - type: custom:button-card
+              label: "-- Afternoon Cycle --"
+              show_name: false
+              show_icon: false
+              show_label: true
+              styles:
+                card:
+                  - height: 50px
+        #                - background: linear-gradient(to right, rgba(255,255,20,0.45) 0%,rgba(255,255,20,0.3) 60%,rgba(255,255,20,0) 85%)
+#                  - background: linear-gradient(to right, var(--paper-card-background-color) 0%, rgba(255,255,255,0.55) 60%, rgba(255,255,255,0) 90%)
+                  - --ha-card-box-shadow: 'none'
+                label:
+                  - justify-self: start
+                  - padding-left: 20px
+                  - font-size: 18pt
 
+            # - type: custom:button-card
+            #   color_type: blank-card
+            #   styles:
+            #     card:
+            #       - width: 2px
+
+            - type: custom:button-card
+              icon: mdi:play-circle-outline
+              show_name: false
+              size: 100%
+              entity: input_boolean.cycle2_manual_run
+              lock: true
+              tap_action:
+                action: toggle
+              styles:
+                card:
+                  - border-radius: 50%
+                  - height: 40px
+                  - width: 90px
+#                  - background: rgba(255,255,255,0.45)
+                  - top: 8px
+                lock:
+                  - color: var(--primary-text-color)
+                icon:
+#                  - color: gray
+                  - width: 35px
+              state:
+                - value: 'off'
+#                  color: rgba(20, 20, 20, 0.4)
+                  icon: mdi:play-circle-outline
+
+                - value: 'on'
+                  color: green
+                  icon: mdi:fountain
+                  # style:
+                  #   card:
+                  #     - animation: blink 2s ease infinite
+                  #     - white-space: nowrap
+
+        #=== Afternoon Cycle details
+        - type: entities
+#          title: '-- Afternoon Cycle --'
+          show_header_toggle: false
+          entities:
+            - sensor.cycle2_running
+            - entity: sensor.cycle2_zone_being_watered
+              icon: mdi:fountain
+            - timer.cycle2_zone_duration
+            - input_number.cycle2_zone1_duration
+            - input_number.cycle2_zone2_duration
+            - input_number.cycle2_zone3_duration
+            - input_number.cycle2_zone4_duration
+            - input_number.cycle2_zone5_duration
+
+            #=== Afternoon Schedule details
+            - type: custom:fold-entity-row
+              head: 
+                type: custom:toggle-lock-entity-row
+                entity: input_boolean.cycle2_enable
+              items:
+                - entity: sensor.cycle2_next_run_time
+                  icon: mdi:clock-start
+                - input_select.cycle2_schedule_time
+                - input_select.cycle2_watering_days
+                - type: divider
+                  style:
+                    height: 10px
+                - type: divider
+
+            #=== Afternoon Weather Adjustment details
+            - type: custom:fold-entity-row
+              open: true
+              head: 
+                entity: input_boolean.cycle2_use_weather_adjustment
+              items:
+                - entity: sensor.cycle2_zone1_duration_adjusted
+                  icon: mdi:camera-timer
+                - entity: sensor.cycle2_zone2_duration_adjusted
+                  icon: mdi:camera-timer
+                - entity: sensor.cycle2_zone3_duration_adjusted
+                  icon: mdi:camera-timer
+                - entity: sensor.cycle2_zone4_duration_adjusted
+                  icon: mdi:camera-timer
+                - entity: sensor.cycle2_zone5_duration_adjusted
+                  icon: mdi:camera-timer
 
 
