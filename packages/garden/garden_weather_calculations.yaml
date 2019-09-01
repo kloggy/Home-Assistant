@@ -6,7 +6,8 @@ automation:
   #=====================================================================
   #=== Adjust weather durations if:
   #===   - the baseline duration is changed
-  #===   - the temperature threshold or rainfall baseline are changed
+  #===   - the temperature threshold
+  #===   - the rainfall threshold or percenatges are changed
   #===   - use weather adjustment is turn on
   #=====================================================================
 
@@ -49,6 +50,9 @@ automation:
         entity_id:
           - input_number.temperature_baseline
           - input_number.rainfall_threshold
+          - input_number.rain_percent_minus1
+          - input_number.rain_percent_minus2
+          - input_number.rain_percent_minus3
     action:
       - service: script.calculate_average_weather_conditions
 
@@ -115,7 +119,7 @@ script:
 
       #=== Set today's forecast high temperature
       #=== but only if it has gone up
-      #=== temp_minus0 is set to low every night at 23:50 in  the automation that
+      #=== temp_minus0 is set to low every night at 23:50 in the automation that
       #=== cycles the weather information
       - service: input_number.set_value
         data_template:
@@ -134,7 +138,7 @@ script:
           entity_id: input_number.temp_high_2days
           value: >
             {{ ((states('input_number.temp_minus0') | float + 
-                 states('input_number.temp_minus1') | float) / 2 ) | round  }}
+                 states('input_number.temp_minus1') | float) / 2 ) | round(1)  }}
     
       #=== Calculate the average high temp for today, yesterday and previous 3 days
       - service: input_number.set_value
@@ -145,7 +149,7 @@ script:
                  states('input_number.temp_minus1') | float +
                  states('input_number.temp_minus2') | float + 
                  states('input_number.temp_minus3') | float + 
-                 states('input_number.temp_minus4') | float) / 5) | round }}
+                 states('input_number.temp_minus4') | float) / 5) | round(1) }}
 
       #=== Calculate Temperature Multiplyer
       #===
@@ -189,10 +193,19 @@ script:
         data_template:
           entity_id: input_number.rain_3days_total
           value: >
-            {{ (states('input_number.rain_minus1') | float * 0.8) +
-               (states('input_number.rain_minus2') | float * 0.5) +
-               (states('input_number.rain_minus3') | float * 0.2) +
+            {% set percent_minus1 = states('input_number.rain_percent_minus1') | float / 100 %}
+            {% set percent_minus2 = states('input_number.rain_percent_minus2') | float / 100 %}
+            {% set percent_minus3 = states('input_number.rain_percent_minus3') | float / 100 %}
+            {{ (states('input_number.rain_minus1') | float * percent_minus1) +
+               (states('input_number.rain_minus2') | float * percent_minus2) +
+               (states('input_number.rain_minus3') | float * percent_minus3) +
                (states('sensor.rain_minus0') | float) }}
+
+          # value: >
+          #   {{ (states('input_number.rain_minus1') | float * 0.8) +
+          #      (states('input_number.rain_minus2') | float * 0.5) +
+          #      (states('input_number.rain_minus3') | float * 0.2) +
+          #      (states('sensor.rain_minus0') | float) }}
 
       #=== Calculate rain multiplier
       #===
@@ -211,7 +224,7 @@ script:
               {% set total_rain = states('input_number.rain_3days_total') | float %}  
             {% endif %}
 
-            {{ 1 - (total_rain / states('input_number.rainfall_threshold') | float) | round(2) }}
+            {{ (1 - (total_rain / states('input_number.rainfall_threshold') | float)) | round(2) }}
 
 
   #=========================================
@@ -301,9 +314,12 @@ script:
           entity_id: input_number.adjusted_cycle{{ cycle }}_zone{{ zone }}_duration
           value: > 
             {% set duration = states('input_number.cycle' + cycle + '_zone' + zone + '_duration') | float %}
-            {% set high_temp = states('input_number.temp_high_2days') | float %}
-            {% set baseline = states('input_number.temperature_baseline') | float %}
-            {{ (((high_temp - baseline) / baseline) + 1) * duration }}
+            {% set multiplier = states('input_number.temp_2days_multiplyer') | float %}
+            {{ duration * multiplier }}
+
+#            {% set high_temp = states('input_number.temp_high_2days') | float %}
+#            {% set baseline = states('input_number.temperature_baseline') | float %}
+#            {{ (((high_temp - baseline) / baseline) + 1) * duration }}
 
       #=== Then adjust for rainfall
       - service: input_number.set_value
