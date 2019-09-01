@@ -3,7 +3,8 @@
 #=== Input_Numbers
 #==================
 input_number:
-  # Temperature
+  
+  #=== Temperature
   temp_minus0:
     name: Temp today
     min: 0
@@ -63,7 +64,7 @@ input_number:
     icon: mdi:thermometer
 
     
-  # Rainfall
+  #=== Rainfall
   rain_minus0:
     name: Rain today
     min: 0
@@ -103,6 +104,28 @@ input_number:
     mode: box
     icon: mdi:weather-rainy
 
+  # Percentage of historical rain to take into account
+  rain_percent_minus1:
+    name: Rain Percent Yesterday
+    min: 0
+    max: 100
+    step: 10
+    icon: mdi:water-percent
+        
+  rain_percent_minus2:
+    name: Rain Percent 2 Days Ago
+    min: 0
+    max: 100
+    step: 10
+    icon: mdi:water-percent
+
+  rain_percent_minus3:
+    name: Rain Percent 3 Days Ago
+    min: 0
+    max: 100
+    step: 10
+    icon: mdi:water-percent
+    
 
 #============
 #=== Sensors
@@ -183,8 +206,8 @@ sensor:
 
   - platform: template
     sensors:
-      # Weather information sensors
-      # Temperature
+      #=== Weather information sensors
+      #=== Temperature
       temp_minus0:
         friendly_name: Temp today
         value_template: "{{ states('input_number.temp_minus0') }}"     
@@ -229,7 +252,8 @@ sensor:
         value_template: "{{ states('input_number.temp_5days_multiplyer') }}"     
 
 
-      # Rainfall
+      #=== Rainfall
+
       # rain_minus0:
       #   friendly_name: Rain today
       #   value_template: "{{ states('input_number.rain_minus0') | int }}"     
@@ -269,16 +293,15 @@ automation:
   #=== Collect new and cycle historic weather data
   #================================================
   - alias: Irrigation Weather Data - Collect New And Cycle Historic Weather Data
-    # initial_state: on
     trigger:
       - platform: time
         at: '06:00:00'
 
     action:
-      # These scripts pass the count of entities but in this case as I 
-      # have numbered them beginning with zero pass the count minus 1
+      #=== These scripts pass the count of entities but in this case as I 
+      #=== have numbered them beginning with zero pass the count minus 1
 
-      # Cycle the temperature figures
+      #=== Cycle the temperature figures
       - service: script.garden_temperature_data
         data_template:
           loop_count: >
@@ -288,11 +311,11 @@ automation:
             {% endfor %}
             {{ (ns.count - 1) }}
 
-      # Update yesterdays rainfall
+      #=== Update yesterdays rainfall
       - service: homeassistant.update_entity
         entity_id: sensor.smartweather_rain_yesterday
 
-      # Cycle the rainfall figures
+      #=== Cycle the rainfall figures
       - service: script.garden_rainfall_data
         data_template:
           loop_count: >
@@ -314,18 +337,18 @@ script:
   garden_temperature_data:
     sequence:
 
-      # Cycle the temperature figures.
-      # Passed {{ loop_count}} which is the number relating to the highest entity
-      # e.g. input_number.temp_minus4
+      #=== Cycle the temperature figures.
+      #===   Passed {{ loop_count}} which is the number relating to the highest entity
+      #===   e.g. input_number.temp_minus4
 
-      # Setting the temperature for today:
-      # DarkSky dark_sky_forecast_temperature_high_0d is used as the high temperature.
+      #=== Setting the temperature for today:
+      #=== DarkSky dark_sky_forecast_temperature_high_0d is used as the high temperature.
 
-      # ===== THIS NEEDS TO BE LOOKED AT
-      # The average weather calculations happen every 30 mins and will
-      # only update todays temperature if it goes up.
-      # This is because the DarkSky max temperature appears to change during
-      # the day to reflect max temperature for the remainder of the day???
+      #=== ===== THIS NEEDS TO BE LOOKED AT
+      #=== The average weather calculations happen every 30 mins and will
+      #=== only update todays temperature if it goes up.
+      #=== This is because the DarkSky max temperature appears to change during
+      #=== the day to reflect max temperature for the remainder of the day???
 
       - service: input_number.set_value
         data_template:
@@ -338,16 +361,16 @@ script:
               {{ states('input_number.temp_minus' ~ (loop_count | int - 1) | string) }}
             {% endif %}
 
-      # Stop when count is 0
+      #=== Stop when count is 0
       - condition: template
         value_template: >
           {{ loop_count | int > 0 }}
 
-      # Stop the looping script...
+      #=== Stop the looping script...
       - service: homeassistant.turn_off
         entity_id: script.loop_garden_temperature_data
 
-      # ...before looping
+      #=== ...before looping
       - service: script.loop_garden_temperature_data
         data_template:
           loop_count: >
@@ -360,11 +383,11 @@ script:
   loop_garden_temperature_data:
     sequence:
 
-      # Stop the calling script...
+      #=== Stop the calling script...
       - service: homeassistant.turn_off
         entity_id: script.garden_temperature_data
 
-      # ...then restart it
+      #=== ...then restart it
       - service: script.garden_temperature_data
         data_template:
           loop_count: >
@@ -377,11 +400,11 @@ script:
   garden_rainfall_data:
     sequence:
 
-      # Cycle the rainfall figures.
-      # Passed {{ loop_count}} which is the number relating to the highest entity
-      # e.g. input_number.rain_minus3
+      #=== Cycle the rainfall figures.
+      #===   Passed {{ loop_count}} which is the number relating to the highest entity
+      #===   e.g. input_number.rain_minus3
 
-      # Now using sensor.smartweather_rain_yesterday
+      #=== Now using sensor.smartweather_rain_yesterday
 
       - service: input_number.set_value
         data_template:
@@ -396,22 +419,22 @@ script:
               {{ states('input_number.rain_minus' ~ (loop_count | int - 1) | string) }}
             {% endif %}
 
-      # # Stop when count is 0
+      # #=== Stop when count is 0
       # - condition: template
       #   value_template: >
       #     {{ loop_count | int > 0 }}
 
-      # Stop when count is 1 because day zero is rain today which
-      # is collected directly from the sensor.smartweather_rain_today
+      #=== Stop when count is 1 because day zero is rain today which
+      #=== is collected directly from the sensor.smartweather_rain_today
       - condition: template
         value_template: >
           {{ loop_count | int > 1 }}
 
-      # Stop the looping script...
+      #=== Stop the looping script...
       - service: homeassistant.turn_off
         entity_id: script.loop_garden_rainfall_data
 
-      # ...before looping
+      #=== ...before looping
       - service: script.loop_garden_rainfall_data
         data_template:
           loop_count: >
@@ -424,11 +447,11 @@ script:
   loop_garden_rainfall_data:
     sequence:
 
-      # Stop the calling script...
+      #=== Stop the calling script...
       - service: homeassistant.turn_off
         entity_id: script.garden_rainfall_data
 
-      # ...then restart it
+      #=== ...then restart it
       - service: script.garden_rainfall_data
         data_template:
           loop_count: >
