@@ -1,0 +1,52 @@
+
+#============
+#=== Scripts
+#============
+script:
+
+  #=======================================
+  #=== Prepare the required Sonos devices
+  #=======================================
+  prepare_sonos_media_players:
+    sequence:
+
+      # Make sure parameters have finished being setup
+      - wait_template: "{{ is_state('script.setup_announcement_parameters', 'off') }}"
+
+      #=== Set the last announcement identity
+      - service: input_text.set_value
+        data_template:
+          entity_id: input_text.last_announcement_id
+          value: "[PREPARING] {{ states('input_text.announcement_id_in_progress') }}"
+
+      #=== This is here to ensure it gets updated to help with debugging
+      - wait_template: >
+          {{ states('input_text.last_announcement_id').startswith('[PREPARING]') }}
+
+      #=== Take a snapshot
+      - service: sonos.snapshot
+        data_template:
+          entity_id: >
+            {% for boolean in states.input_boolean if 'announcement_on_' in boolean.entity_id and is_state(boolean.entity_id, 'on') -%}
+              media_player.{{ boolean.entity_id.split('.')[1].split('announcement_on_')[1].split('_media_player')[0] }}{%- if not loop.last %}, {% endif %}
+            {%- endfor %}
+
+      #=== Unjoin
+      - service: sonos.unjoin
+        data_template:
+          entity_id: >
+            {% for boolean in states.input_boolean if 'announcement_on_' in boolean.entity_id and is_state(boolean.entity_id, 'on') -%}
+              media_player.{{ boolean.entity_id.split('.')[1].split('announcement_on_')[1].split('_media_player')[0] }}{%- if not loop.last %}, {% endif %}
+            {%- endfor %}
+
+      #=== Join
+      - service: sonos.join
+        data_template:
+          master: >
+            media_player.{{ states('input_select.sonos_group_master') | replace(' ', '_') | lower }}
+          entity_id: >
+            {% for boolean in states.input_boolean if 'announcement_on_' in boolean.entity_id and is_state(boolean.entity_id, 'on') -%}
+              media_player.{{ boolean.entity_id.split('.')[1].split('announcement_on_')[1].split('_media_player')[0] }}{%- if not loop.last %}, {% endif %}
+            {%- endfor %}
+
+
