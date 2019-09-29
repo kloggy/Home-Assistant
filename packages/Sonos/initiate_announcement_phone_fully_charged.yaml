@@ -1,0 +1,56 @@
+#============
+#=== Scripts
+#============
+script:
+
+  #===========================================================
+  #=== Take control of announcements and then call the script
+  #=== that publishes it.
+  #===
+  #=== Passed {{ name }} of the person whose phone is charged
+  #===========================================================
+  initiate_announcement_phone_fully_charged:
+    sequence:
+
+      #=== Wait until no announcements are in progress or this is not the last announcement
+      - wait_template: >
+          {{ is_state('input_boolean.announcement_in_progress', 'off') or
+             is_state('input_boolean.announcement_last', 'off') }}
+
+      #=== Turn on announcement in progress boolean
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.announcement_in_progress
+
+      #=== Identify this announcement
+      - service: input_text.set_value
+        data:
+          entity_id: input_text.announcement_id_in_progress
+          value: Phone Fully Charged
+
+      #=== Check the system is still expecting this announcement
+      #=== i.e. no other process sneaked in
+      - service_template: >
+          {% if is_state('input_boolean.announcement_in_progress', 'on') and 
+                is_state('input_text.announcement_id_in_progress', 'Phone Fully Charged') %}
+            script.announcement_phone_fully_charged
+          {% else %}
+            script.loop_initiate_announcement_phone_fully_charged
+          {%- endif %}
+        data_template:
+          name: "{{ name }}"
+
+
+  #===========================================================
+  #=== If the preparation failed we need to try again so loop
+  #=== the script.
+  #============================================================
+  loop_initiate_announcement_phone_fully_charged:
+    sequence:
+
+      #=== Make sure the calling script is off
+      - service: homeassistant.turn_off
+        entity_id: script.initiate_announcement_phone_fully_charged
+
+      #=== Restart the process
+      - service: script.initiate_announcement_phone_fully_charged
+
