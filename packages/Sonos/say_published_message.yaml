@@ -1,0 +1,143 @@
+
+#================
+#=== Automations
+#================
+automation:
+
+  #===================================
+  #=== Say the published announcement
+  #===================================
+  - alias: Announcement Say Published Message
+    trigger: 
+      - platform: mqtt
+        topic: notifications/announcement
+
+    action:
+      #=== Set the last announcement identity
+      - service: input_text.set_value
+        data_template:
+          entity_id: input_text.last_announcement_id
+          value: "[PUBLISHED] {{ states('input_text.announcement_id_in_progress') }}"
+
+      #=== This is here to ensure it gets updated to help with debugging
+      - wait_template: >
+          {{ states('input_text.last_announcement_id').startswith('[PUBLISHED]') }}
+
+      #=== Set volume to quiet time volume:
+      #===   if in quiet time and 
+      #===      not priority announcement and
+      #===      none of the sonos being used are playing
+      #=== Set volume
+      - service: media_player.volume_set
+        data_template:
+          entity_id: >
+            media_player.{{ states('input_select.sonos_group_master') | replace(' ', '_') | lower }}
+          volume_level: >
+            {% if states('sensor.time') + ':00' <= states('input_datetime.announcement_quiet_time_before') or
+                  states('sensor.time') + ':00' >= states('input_datetime.announcement_quiet_time_after') %}
+              {% set in_quiet_time = True %}
+            {% else %}
+              {% set in_quiet_time = False %}
+            {% endif %}
+
+            {% if is_state('input_boolean.announcement_priority', 'off') %}
+              {% set not_priority = True %}
+            {% else %}
+              {% set not_priority = False %}
+            {% endif %}
+
+            {% set ns = namespace(count = 0) %}
+            {% for boolean in states.input_boolean if 'announcement_on_' in boolean.entity_id and is_state(boolean.entity_id, 'on') -%}
+              {% if states('media_player.' + boolean.entity_id.split('.')[1].split('announcement_on_')[1].split('_media_player')[0]) == 'playing'%}
+                {%- set ns.count = ns.count + 1 -%}
+              {% endif %}
+            {%- endfor %}
+            {% if ns.count == 0 %}
+              {% set is_paused = True %}
+            {% else %}
+              {% set is_paused = False %}
+            {% endif %}
+
+            {% if in_quiet_time and
+                  not_priority and
+                  is_paused %}
+              {{ states('input_number.quiet_time_volume') | float }}
+            {% else %}
+              {{ states('input_number.announcement_volume') | float }}
+            {% endif %}
+
+      #=== Optional pause before speaking
+      - delay: >
+          00:00:{{ '{:02}'.format(states('input_number.announcement_pause') | default(0) | int) }}
+
+      #=== Set the last announcement identity
+      - service: input_text.set_value
+        data_template:
+          entity_id: input_text.last_announcement_id
+          value: "[ANNOUNCE] {{ states('input_text.announcement_id_in_progress') }}"
+
+      #=== This is here to ensure it gets updated to help with debugging
+      - wait_template: >
+          {{ states('input_text.last_announcement_id').startswith('[ANNOUNCE]') }}
+
+      #=== Make the announcement
+      - service_template: >
+          tts.{{ states('input_select.announcement_voice') }}_say
+        data_template:
+          entity_id: >    
+            media_player.{{ states('input_select.sonos_group_master') | replace(' ', '_') | lower }}
+          message: >
+            {{ trigger.payload }}
+
+      #=== Set the last announcement identity
+      - service: input_text.set_value
+        data_template:
+          entity_id: input_text.last_announcement_id
+          value: "[PLAYING] {{ states('input_text.announcement_id_in_progress') }}"
+
+      #=== This is here to ensure it gets updated to help with debugging
+      - wait_template: >
+          {{ states('input_text.last_announcement_id').startswith('[PLAYING]') }}
+
+      #=== Wait until announcement starts playing
+      - wait_template: >
+          {{ is_state('sensor.sonos_master_state', 'playing') }}
+
+      #=== Now wait until it has finished playing
+      - wait_template: >
+          {{ is_state('sensor.sonos_master_state', 'paused') }}
+
+      #=== Set the last announcement identity
+      - service: input_text.set_value
+        data_template:
+          entity_id: input_text.last_announcement_id
+          value: "[PLAYED] {{ states('input_text.announcement_id_in_progress') }}"
+
+      #=== This is here to ensure it gets updated to help with debugging
+      - wait_template: >
+          {{ states('input_text.last_announcement_id').startswith('[PLAYED]') }}
+
+      #=== If Last announcement then continue
+      - condition: template
+        value_template: >
+          {{ is_state('input_boolean.announcement_last', 'on') }}
+
+      #=== Restore Sonos
+      - service: sonos.restore
+        data_template:
+          entity_id: >
+            {% for boolean in states.input_boolean if 'announcement_on_' in boolean.entity_id and is_state(boolean.entity_id, 'on') -%}
+              media_player.{{ boolean.entity_id.split('.')[1].split('announcement_on_')[1].split('_media_player')[0] }}{%- if not loop.last %}, {% endif %}
+            {%- endfor %}
+
+      #=== Remove this announcements identity
+      - service: input_text.set_value
+        data:
+          entity_id: input_text.announcement_id_in_progress
+          value: None
+
+      #=== Turn off announcement in progress
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.announcement_in_progress
+
+
