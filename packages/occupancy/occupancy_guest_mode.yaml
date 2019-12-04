@@ -8,12 +8,11 @@ automation:
   #===
   #=== If the house is not in holiday mode and
   #=== if they are turned on, it is the right day and
-  #=== the time now is during the on time then set
+  #=== the time now is during the on time, then set
   #=== the timer to run until the scheduled end time.
   #====================================================
   #=== Guest Schedule 1
   - alias: Guest mode schedule 1 check at startup
-    # initial_state: on
     trigger:
       - platform: homeassistant
         event: start
@@ -65,7 +64,6 @@ automation:
 
   #=== Guest Schedule 2
   - alias: Guest mode schedule 2 check at startup
-    # initial_state: on
     trigger:
       - platform: homeassistant
         event: start
@@ -128,7 +126,6 @@ automation:
   #=== then turn on Holiday Mode (Forced)
   #==================================================
   - alias: Guest Mode once start timer
-    # initial_state: on
     trigger:
       - platform: state
         entity_id: input_boolean.guest_mode_once
@@ -165,7 +162,6 @@ automation:
   #=== turn holiday mode back on if it was on when timer started
   #==============================================================
   - alias: Guest Mode once timer finished
-    # initial_state: on
     trigger:
       - platform: event
         event_type: timer.finished
@@ -182,7 +178,6 @@ automation:
   #=== Turn off Guest Mode once manually
   #======================================
   - alias: Guest Mode once off
-    # initial_state: on
     trigger:
       - platform: state
         entity_id: input_boolean.guest_mode_once
@@ -206,7 +201,6 @@ automation:
   #=== If it is the right day
   #===========================================
   - alias: Guest Mode schedule 1 start timer
-    # initial_state: on
     trigger:
       - platform: template
         value_template: "{{ states('sensor.time') ~ ':00' == states('input_datetime.guest_mode_schedule_1_start_time') }}"
@@ -255,14 +249,12 @@ automation:
             state_filter:
               - "active"
           deviceID:
-            - MYPC
-
+            - MyPC
 
   #=============================================
   #=== Turn off scheduled Guest Mode 1 manually
   #=============================================
   - alias: Guest Mode schedule 1 off
-    # initial_state: on
     trigger:
       - platform: state
         entity_id: input_boolean.guest_mode_schedule_1
@@ -286,7 +278,6 @@ automation:
   #=== If it is the right day
   #===========================================
   - alias: Guest Mode schedule 2 start timer
-    # initial_state: on
     trigger:
       - platform: template
         value_template: "{{ states('sensor.time') ~ ':00' == states('input_datetime.guest_mode_schedule_2_start_time') }}"
@@ -335,14 +326,12 @@ automation:
             state_filter:
               - "active"
           deviceID:
-            - MYPC
-
+            - MyPC
 
   #=============================================
   #=== Turn off scheduled Guest Mode 2 manually
   #=============================================
   - alias: Guest Mode schedule 2 off
-    # initial_state: on
     trigger:
       - platform: state
         entity_id: input_boolean.guest_mode_schedule_2
