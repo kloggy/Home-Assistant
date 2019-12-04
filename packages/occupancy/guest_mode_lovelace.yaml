@@ -1,0 +1,72 @@
+#=== THIS IS NOT A COMPLETE LOVELACE VIEW
+#=== I have added this here at the request
+#=== af a forum member.
+#=== It is just a snippet to enable the 
+#=== the rest of the Guest Mode to be used.
+#=== Please adapt and incorporate into your
+#=== configuration as appropriate.
+
+cards:
+
+  - type: custom:fold-entity-row
+    head: 
+      entity: binary_sensor.guest_mode
+    items:
+      - type: divider
+
+      #=== Schedule once
+      - type: custom:fold-entity-row
+        head: 
+          type: custom:toggle-lock-entity-row
+          entity: input_boolean.guest_mode_once
+          name: Guest mode once
+          icon: mdi:human-handsup
+        items:
+          - input_number.guest_mode_once_duration
+          - type: divider
+
+      #=== Schedule 1
+      - type: custom:fold-entity-row
+        head: 
+          type: custom:toggle-lock-entity-row
+          entity: input_boolean.guest_mode_schedule_1
+          name: Guest schedule (1)
+          icon: mdi:numeric-1-box-outline
+        items:
+          - input_text.guest_mode_schedule_1_name
+          - input_select.guest_mode_schedule_1_day
+          - input_datetime.guest_mode_schedule_1_start_time
+          - input_number.guest_mode_schedule_1_duration
+          - type: divider
+
+      #=== Schedule 2
+      - type: custom:fold-entity-row
+        head: 
+          type: custom:toggle-lock-entity-row
+          entity: input_boolean.guest_mode_schedule_2
+          name: Guest schedule (2)
+          icon: mdi:numeric-2-box-outline
+        items:
+          - input_text.guest_mode_schedule_2_name
+          - input_select.guest_mode_schedule_2_day
+          - input_datetime.guest_mode_schedule_2_start_time
+          - input_number.guest_mode_schedule_2_duration
+          # - type: divider
+
+  #========================
+  #=== Active Guest Timers
+  #========================
+  - type: entity-filter
+    card:
+      type: entities
+      show_header_toggle: false
+      title: '-- Active Guest Timers --'
+    entities:
+      - timer.guest_mode_once_duration
+      - timer.guest_mode_schedule_1_duration
+      - timer.guest_mode_schedule_2_duration
+    state_filter:
+      - "active"
+    show_empty: false
+
+
