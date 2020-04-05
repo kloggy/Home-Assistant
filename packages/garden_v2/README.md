@@ -30,7 +30,7 @@ The watering times can be automatically adjusted based on rainfall and temperatu
 
 Almost everything can be set from the UI including the friendly names of cycles and zones.
 
-__Note -__ Extensive use is made of `!include` to avoid code repetion. The files here are in the folder structure needed except that the folder `garden_v2` should be called `garden` but you can easily change the code to suit your own structure.
+__Note -__ Extensive use is made of `!include` to avoid code repetion. The files here are in the folder structure needed but you can easily change the code to suit your own structure.
 
 __Note -__ The Lovelace interface makes use of many custom cards (all installable using HACS https://github.com/hacs):
 
