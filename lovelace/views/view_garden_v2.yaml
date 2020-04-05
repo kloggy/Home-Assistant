@@ -1,0 +1,67 @@
+
+title: Garden
+path: garden
+icon: mdi:flower
+theme: irrigation_theme
+
+cards:
+
+  #==================
+  #=== SYSTEM STATUS
+  #==================
+  - type: vertical-stack
+    cards:
+
+      #=== SYSTEM STATUS HEADING
+      - !include includes_garden/section_status.yaml
+
+      #=== CURRENT STATUS
+      - type: conditional
+        conditions:
+          - entity: input_boolean.irrigation_master_control_switch
+            state: "on"
+        card:
+          !include includes_garden/section_status_current_status.yaml
+
+      #=== LAST RUN
+      - type: conditional
+        conditions:
+          - entity: input_boolean.irrigation_master_control_switch
+            state: "on"
+        card:
+          !include includes_garden/section_status_last_run.yaml
+
+      #=== HISTORY
+      - type: conditional
+        conditions:
+          - entity: input_boolean.irrigation_master_control_switch
+            state: "on"
+        card:
+          !include includes_garden/section_status_history.yaml
+
+
+  #==============
+  #=== SCHEDULES 
+  #==============
+  - type: vertical-stack
+    cards:
+      - type: conditional
+        conditions:
+          - entity: input_boolean.irrigation_master_control_switch
+            state: "on"
+        card: 
+          !include includes_garden/section_schedules.yaml
+
+
+  #=============
+  #=== SETTINGS
+  #=============
+  - type: vertical-stack
+    cards:
+      - type: conditional
+        conditions:
+          - entity: input_boolean.irrigation_master_control_switch
+            state: "on"
+        card:
+          !include includes_garden/section_settings.yaml
+
