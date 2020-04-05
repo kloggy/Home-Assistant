@@ -1,0 +1,29 @@
+# lovelace_gen
+
+type: custom:button-card
+icon: mdi:toggle-switch
+show_name: false
+entity: input_boolean.irrigation_cycle{{ cycle }}_schedule_enabled
+tap_action:
+  action: toggle
+styles:
+  card:
+    - background: none
+    - height: 45px
+    - width: 45px
+    - margin: 0.5em
+    - box-shadow: none
+  icon:
+    - width: 45px
+state:
+  - value: 'off'
+    icon: mdi:toggle-switch-off-outline
+    styles:
+      card:
+        - color: var(--secondary-text-color)
+        - opacity: 50%
+      icon:
+        - color: var(--secondary-text-color)
+  - value: 'on'
+    color: var(--paper-item-icon-active-color)
+    icon: mdi:toggle-switch

@@ -1,0 +1,34 @@
+# lovelace_gen
+
+#=========================
+#=== Cycle Schedule Title
+#=========================
+type: custom:button-card
+entity: sensor.weather_just_icon
+name: "[[[ var entity_id = 'input_text.irrigation_cycle{{ cycle }}_name'; return states[entity_id].state.toUpperCase() + ' SCHEDULE'; ]]]"
+label: "[[[ return 'Weather Outlook: ' + states['sensor.dark_sky_current_minutely_summary'].state.replace(',', ',<br>'); ]]]"
+show_label: true
+size: 60%
+tap_action: 
+  action: none
+styles:
+  grid:
+    - grid-template-areas: '"n n" "i l"'
+    - grid-template-columns: min-content min-content  
+    - grid-template-rows: 1fr min-content
+  img_cell:
+    - width: 2em
+  card:
+    - box-shadow: none
+    - margin: 0em 1em -0.5em 1em
+  name:
+    - font-family: Oswald
+    - font-size: 18px
+    - color: var(--secondary-text-color)
+    - justify-self: start
+  label:
+    - justify-self: start
+    - text-align: left
+    - font-size: 12px
+    - margin-top: 0.2em
+

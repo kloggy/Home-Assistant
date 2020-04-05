@@ -1,0 +1,26 @@
+# lovelace_gen
+
+type: custom:button-card
+icon: mdi:sprinkler-variant
+show_name: false
+entity: input_boolean.irrigation_cycle{{ cycle }}_running
+tap_action:
+  action: none
+styles:
+  card:
+    - background: none
+    - height: 45px
+    - width: 45px
+    - margin: 0.5em
+    - box-shadow: none
+  icon:
+    - width: 25px
+state:
+  - value: 'off'
+    color: var(--primary-background-color)
+  - value: 'on'
+    color: var(--paper-item-icon-active-color)
+    styles:
+      icon:
+        - animation: blink 2s ease infinite
+

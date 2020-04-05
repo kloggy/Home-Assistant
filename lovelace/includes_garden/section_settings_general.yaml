@@ -1,0 +1,250 @@
+
+#=====================
+#=== GENERAL SETTINGS
+#=====================
+type: conditional
+conditions:
+  - entity: input_boolean.irrigation_show_general_settings
+    state: "on"
+card:
+  type: custom:stack-in-card
+  cards:
+    - type: custom:mod-card
+      style: |
+        ha-card {
+          margin: 1em 1em 0em 1em;
+        }
+      card:
+        type: horizontal-stack
+        cards:
+
+          #=== Irrigation Master Control switch
+          - !include
+            - ../includes/button_boolean_check_box_with_entity_icon.yaml
+            - entity: input_boolean.irrigation_master_control_switch
+              on_name: "System is ON"
+              off_name: "System is OFF"
+
+          #=== Irrigation Testing Mode
+          - !include
+            - ../includes/button_boolean_check_box_with_entity_icon.yaml
+            - entity: input_boolean.irrigation_testing_mode
+
+    #=== Testing mode warning
+    - type: horizontal-stack
+      cards:
+
+        - type: custom:button-card
+          color_type: blank_card
+          styles:
+            card:
+              - box-shadow: none
+              - background-color: transparent
+              - height: >
+                  [[[
+                    if (states['input_boolean.irrigation_testing_mode'].state == 'on')
+                      return '2.5em';
+                    else return '0em';
+                  ]]]
+
+        - type: custom:button-card
+          name: >
+            [[[
+              if (states['input_boolean.irrigation_testing_mode'].state == 'on')
+                return 'Warning! Testing mode converts run<br>times from minutes to seconds';
+            ]]]
+          styles:
+            grid:
+              - grid-template-areas: '"n"'
+              - grid-template-columns: 1fr
+              - grid-template-rows: min-content
+            card:
+              - height: >
+                  [[[
+                    if (states['input_boolean.irrigation_testing_mode'].state == 'on')
+                      return '2.5em';
+                    else return '0em';
+                  ]]]
+              - font-size: 12px
+              - box-shadow: none
+              - background-color: transparent
+              - padding: 0em 1em 0em
+              - margin-top: 0.5em
+            name:
+              - color: var(--secondary-text-color)
+        
+    - type: custom:mod-card
+      style: |
+        ha-card {
+          margin: 0em 1em 0em 1em;
+        }
+      card:
+        type: horizontal-stack
+        cards:
+
+          #=== Notify User 1
+          - type: custom:config-template-card
+            variables:
+              - states['input_text.notifications_user1_name'].state
+            entities:
+              - input_text.notifications_user1_name
+              - input_boolean.irrigation_notify_user1
+            card:
+              !include
+              - ../includes/button_boolean_check_box_with_entity_icon.yaml
+              - entity: input_boolean.irrigation_notify_user1
+                name: "${'Notify ' +  vars[0] + ' of events'}"
+
+          #=== Notify User 2
+          - type: custom:config-template-card
+            variables:
+              - states['input_text.notifications_user2_name'].state
+            entities:
+              - input_text.notifications_user2_name
+              - input_boolean.irrigation_notify_user2
+            card:
+              !include
+              - ../includes/button_boolean_check_box_with_entity_icon.yaml
+              - entity: input_boolean.irrigation_notify_user2
+                name: "${'Notify ' +  vars[0] + ' of events'}"
+
+    #=== Edit user names
+    - type: custom:button-card
+      name: '•  Edit user names '
+      icon: mdi:dots-horizontal
+      styles:
+        grid:
+          - grid-template-areas: '"n i"'
+          - grid-template-columns: 1fr 5%
+          - grid-template-rows: min-content
+        card:
+          - height: 1em
+          - font-size: 12px
+          - padding: 0em 1em 2em
+          - margin-top: 0em
+        name:
+          - color: var(--secondary-text-color)
+          - justify-self: right
+        icon:
+          - width: 25px
+      tap_action:
+        action: call-service
+        service: browser_mod.popup
+        service_data:
+          title: "User names"
+          card:
+            type: entities
+            entities:
+              - entity: input_text.notifications_user1_name
+                name: User 1
+              - entity: input_text.notifications_user2_name
+                name: User 2
+          deviceID:
+            - this
+          style:
+            font-family: Oswald
+            font-size: 14px
+            border-radius: 10px
+            box-shadow: 0px 0px 8px 2px
+            opacity: 0.9
+            "--primary-text-color": "#FFFFFF"
+            "--paper-dialog-background-color": "#343433"  # Popup header
+            "--paper-card-background-color": "#343433"  # Card background
+            "--secondary-background-color": "#525251"
+
+    - type: entities
+      entities:
+        - type: divider
+      style: >
+        ha-card {
+          margin-top: -1em;
+          margin-bottom: -2em;
+        }
+
+    - type: entities
+      entities:
+
+        #=== Number of zones
+        - !include
+            - item_settings_line.yaml
+            - entity: input_number.irrigation_number_of_zones
+              name: Number of zones defined
+
+        #=== Minimum duration when using weather adjustments
+        - !include
+            - item_settings_line.yaml
+            - entity: input_number.irrigation_weather_adjusted_minimum_duration_in_seconds
+              name: Minimum number of seconds to run a zone
+              margin_top: -0.5em
+
+        #=== Maximum duration when using weather adjustments
+        - !include
+            - item_settings_line.yaml
+            - entity: input_number.irrigation_weather_adjusted_maximum_duration_in_minutes
+              name: Maximum number of minutes to run a zone
+              margin_top: -0.5em
+
+        - type: divider
+
+        #=== Irigation controller WiFi signal strength
+        - !include
+            - item_settings_line.yaml
+            - entity: sensor.garden_irrigation_controller_wifi_signal
+              name: Irrigation Controller WiFi Signal Strength
+              tap_action: none
+
+        #=== Sonoff Failsafe Switch WiFi signal strength
+        - type: custom:config-template-card
+          variables:
+            - states['input_text.irrigation_failsafe_switch_name'].state
+          entities:
+            - states['input_text.irrigation_failsafe_switch_name'].state
+          card:
+            !include
+              - item_settings_line.yaml
+              - entity: "${ vars[0].replace('switch', 'sensor') }"
+                name: Sonoff Failsafe Switch WiFi signal strength
+                icon: mdi:wifi
+                tap_action: none
+
+    #=== Sonoff Failsafe Switch name
+    - type: custom:button-card
+      name: '•  Edit Sonoff Failsafe Switch Name '
+      icon: mdi:dots-horizontal
+      styles:
+        grid:
+          - grid-template-areas: '"n i"'
+          - grid-template-columns: 1fr 5%
+          - grid-template-rows: min-content
+        card:
+          - height: 1em
+          - font-size: 12px
+          - padding: 0em 1em 2em
+          - margin-top: -1.75em
+        name:
+          - color: var(--secondary-text-color)
+          - justify-self: right
+        icon:
+          - width: 25px
+      tap_action:
+        action: call-service
+        service: browser_mod.popup
+        service_data:
+          title: "Sonoff Switch Name"
+          card:
+            type: entities
+            entities:
+              - entity: input_text.irrigation_failsafe_switch_name
+                name: Sonoff Name
+          deviceID:
+            - this
+          style:
+            font-family: Oswald
+            font-size: 14px
+            border-radius: 10px
+            box-shadow: 0px 0px 8px 2px
+            opacity: 0.9
+            "--primary-text-color": "#FFFFFF"
+            "--paper-dialog-background-color": "#343433"  # Popup header
+            "--paper-card-background-color": "#343433"  # Card background
+            "--secondary-background-color": "#525251"
