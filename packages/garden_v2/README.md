@@ -32,6 +32,8 @@ Almost everything can be set from the UI including the friendly names of cycles 
 
 __Note -__ Extensive use is made of `!include` to avoid code repetion. The files here are in the folder structure needed but you can easily change the code to suit your own structure.
 
+__Note -__ I use a theme called `dark_teal` (available here https://github.com/aFFekopp/dark_teal and via HACS) but I *think* it should work with the default HA theme as well.
+
 __Note -__ The Lovelace interface makes use of many custom cards (all installable using HACS https://github.com/hacs):
 
 
