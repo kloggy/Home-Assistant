@@ -34,7 +34,21 @@ __Note -__ Extensive use is made of `!include` to avoid code repetion. The files
 
 __Note -__ I use a theme called `dark_teal` (available here https://github.com/aFFekopp/dark_teal and via HACS) but I *think* it should work with the default HA theme as well.
 
-__Note -__ The Lovelace interface makes use of many custom cards (all installable using HACS https://github.com/hacs):
+
+<h2>Prerequisites</h2>
+
+__sensor.time__ is needed somewhere in your config
+
+I have written in some notification functionality. I use it so that when I am away on holiday it tells me when irrigation starts and ends. In order for this to be used you will need to have two extra 'helpers':
+
+`input_text.notifications_user1_name` and
+`input_text.notifications_user2_name`
+
+Mine are elsewhere in my config because they are part of my notifiaction system. The actual notifications are also handled outside the package so some changes will be needed to suit whatever notification methods you choose to use.
+
+
+
+__The Lovelace interface__ makes use of many custom cards (all installable using HACS https://github.com/hacs):
 
 
 - card-mod (https://github.com/thomasloven/lovelace-card-mod)
