@@ -58,11 +58,7 @@ __The Lovelace interface__ makes use of many custom cards (all installable using
 - config-template-card (https://github.com/iantrich/config-template-card)
 - stack-in-card (https://github.com/custom-cards/stack-in-card)
 - mini-graph-card (https://github.com/kalkih/mini-graph-card)
-- lovelace_gen (NOTE: this requires `lovelace_gen:` in your config. See https://github.com/thomasloven/hass-lovelace_gen) 
-
-
-__Disclaimer__ - This has NOT been extensivley tested. In fact as of now it has only been used on my desk! Treat this as a preview but feel free of course to use, adapt or change it in any way you see fit. But if you do find errors I'd be interested to know so I can look at it although no promises can be made regarding how or when I will get to fix anything. Likewise if you come up with any improvements also please tell me!
-
+- lovelace_gen (https://github.com/thomasloven/hass-lovelace_gen) 
 
 
 __Weather sensors:__ I use SmartWeather and DarkSky weather sensors to provide the data for duration adjustments.
@@ -72,3 +68,4 @@ DarkSky will I believe become unavailable in 2021 as Apple have recently bought 
 
 --------------
 
+__Disclaimer__ - This has __NOT__ been extensivley tested. In fact as of now it has only been used on my desk! Treat this as a preview but feel free of course to use, adapt or change it in any way you see fit. But if you do find errors I'd be interested to know so I can look at it although no promises can be made regarding how or when I will get to fix anything. Likewise if you come up with any improvements also please tell me!
