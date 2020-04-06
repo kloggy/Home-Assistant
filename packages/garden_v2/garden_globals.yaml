@@ -88,7 +88,7 @@ input_number:
     icon: mdi:timer-sand-empty
 
   irrigation_weather_adjusted_maximum_duration_in_minutes: 
-    name: Minimum Duration After Weather Adjustment In Minutes
+    name: Maximum Duration After Weather Adjustment In Minutes
     min: 1
     max: 120
     step: 1
