@@ -39,7 +39,7 @@ __Note -__ I use a theme called `dark_teal` (available here https://github.com/a
 
 __sensor.time__ is needed somewhere in your config
 
-I have written in some notification functionality. I use it so that when I am away on holiday it tells me when irrigation starts and ends. In order for this to be used you will need to have two extra 'helpers':
+I have written in some __notification__ functionality. I use it so that when I am away on holiday it tells me when irrigation starts and ends. In order for this to be used you will need to have two extra 'helpers':
 
 `input_text.notifications_user1_name` and
 `input_text.notifications_user2_name`
