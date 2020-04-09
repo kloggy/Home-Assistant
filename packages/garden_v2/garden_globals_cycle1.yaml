@@ -63,7 +63,6 @@ input_number:
     unit_of_measurement: min
     icon: mdi:numeric-8-box-outline
 
-
   #=========================================
   #=== Cycle 1 zone durations (Input Boxes)
   #=========================================
@@ -300,256 +299,288 @@ sensor:
       irrigation_cycle1_zone1_actual_duration_in_seconds:
         friendly_name: Cycle 1 Zone 1 Actual Duration In Seconds
         value_template: >
-          {% set duration = states('input_number.irrigation_cycle1_zone1_duration') | float %}
-          
+          {% set duration_secs = states('input_number.irrigation_cycle1_zone1_duration') | float * 60 %}
+          {% set min_duration_secs= states('input_number.irrigation_weather_adjusted_minimum_duration_in_seconds') | float %}
+          {% set max_duration_secs= states('input_number.irrigation_weather_adjusted_maximum_duration_in_minutes') | float * 60 %}
+
           {# Adjust for rainfall #}
           {% if is_state('input_boolean.irrigation_cycle1_adjust_for_rainfall', 'on') %}
-            {% set duration = duration * states('input_number.irrigation_rainfall_multiplier') | float %}
+            {% set duration_secs = duration_secs * states('input_number.irrigation_rainfall_multiplier') | float %}
           {% endif %}
 
           {# Adjust for temperature #}
           {% if is_state('input_boolean.irrigation_cycle1_adjust_for_temperature', 'on') %}
-            {% set duration = duration * states('input_number.irrigation_temp_multiplier') | float %}
+            {% set duration_secs = duration_secs * states('input_number.irrigation_temp_multiplier') | float %}
           {% endif %}
-          
-          {% set minimum_duration_in_seconds= states('input_number.irrigation_weather_adjusted_minimum_duration_in_seconds') | float %}
-          {% set maximum_duration_in_minutes= states('input_number.irrigation_weather_adjusted_maximum_duration_in_minutes') | float %}
+
+          {% if is_state('input_boolean.irrigation_cycle1_adjust_for_rainfall', 'on') or
+                is_state('input_boolean.irrigation_cycle1_adjust_for_temperature', 'on') %}
+            {% if duration_secs > max_duration_secs %}
+              {% set duration_secs = max_duration_secs %}
+            {% elif duration_secs < min_duration_secs %}
+              {% set duration_secs = min_duration_secs %}
+            {% endif %}
+          {% endif %}
 
           {% if is_state('input_boolean.irrigation_cycle1_zone1_skip', 'on') %}
             0
-          {% elif (duration * 60) < minimum_duration_in_seconds%}
-            0
-          {% elif duration > maximum_duration_in_minutes%}
-            {{ maximum_duration_in_minutes* 60 }}
           {% else %}
             {% if is_state('input_boolean.irrigation_testing_mode', 'on') %}
-              {{ duration | round() }}
+              {{ (duration_secs / 60) | round() }}
             {% else %}
-              {{ (duration * 60) | round() }}
+              {{ duration_secs | round() }}
             {% endif %}
           {% endif %}
 
       irrigation_cycle1_zone2_actual_duration_in_seconds:
         friendly_name: Cycle 1 Zone 2 Actual Duration In Seconds
         value_template: >
-          {% set duration = states('input_number.irrigation_cycle1_zone2_duration') | float %}
-          
+          {% set duration_secs = states('input_number.irrigation_cycle1_zone2_duration') | float * 60 %}
+          {% set min_duration_secs= states('input_number.irrigation_weather_adjusted_minimum_duration_in_seconds') | float %}
+          {% set max_duration_secs= states('input_number.irrigation_weather_adjusted_maximum_duration_in_minutes') | float * 60 %}
+
           {# Adjust for rainfall #}
           {% if is_state('input_boolean.irrigation_cycle1_adjust_for_rainfall', 'on') %}
-            {% set duration = duration * states('input_number.irrigation_rainfall_multiplier') | float %}
+            {% set duration_secs = duration_secs * states('input_number.irrigation_rainfall_multiplier') | float %}
           {% endif %}
 
           {# Adjust for temperature #}
           {% if is_state('input_boolean.irrigation_cycle1_adjust_for_temperature', 'on') %}
-            {% set duration = duration * states('input_number.irrigation_temp_multiplier') | float %}
+            {% set duration_secs = duration_secs * states('input_number.irrigation_temp_multiplier') | float %}
           {% endif %}
-          
-          {% set minimum_duration_in_seconds= states('input_number.irrigation_weather_adjusted_minimum_duration_in_seconds') | float %}
-          {% set maximum_duration_in_minutes= states('input_number.irrigation_weather_adjusted_maximum_duration_in_minutes') | float %}
+
+          {% if is_state('input_boolean.irrigation_cycle1_adjust_for_rainfall', 'on') or
+                is_state('input_boolean.irrigation_cycle1_adjust_for_temperature', 'on') %}
+            {% if duration_secs > max_duration_secs %}
+              {% set duration_secs = max_duration_secs %}
+            {% elif duration_secs < min_duration_secs %}
+              {% set duration_secs = min_duration_secs %}
+            {% endif %}
+          {% endif %}
 
           {% if is_state('input_boolean.irrigation_cycle1_zone2_skip', 'on') %}
             0
-          {% elif (duration * 60) < minimum_duration_in_seconds%}
-            0
-          {% elif duration > maximum_duration_in_minutes%}
-            {{ maximum_duration_in_minutes* 60 }}
           {% else %}
             {% if is_state('input_boolean.irrigation_testing_mode', 'on') %}
-              {{ duration | round() }}
+              {{ (duration_secs / 60) | round() }}
             {% else %}
-              {{ (duration * 60) | round() }}
+              {{ duration_secs | round() }}
             {% endif %}
           {% endif %}
 
       irrigation_cycle1_zone3_actual_duration_in_seconds:
         friendly_name: Cycle 1 Zone 3 Actual Duration In Seconds
         value_template: >
-          {% set duration = states('input_number.irrigation_cycle1_zone3_duration') | float %}
-          
+          {% set duration_secs = states('input_number.irrigation_cycle1_zone3_duration') | float * 60 %}
+          {% set min_duration_secs= states('input_number.irrigation_weather_adjusted_minimum_duration_in_seconds') | float %}
+          {% set max_duration_secs= states('input_number.irrigation_weather_adjusted_maximum_duration_in_minutes') | float * 60 %}
+
           {# Adjust for rainfall #}
           {% if is_state('input_boolean.irrigation_cycle1_adjust_for_rainfall', 'on') %}
-            {% set duration = duration * states('input_number.irrigation_rainfall_multiplier') | float %}
+            {% set duration_secs = duration_secs * states('input_number.irrigation_rainfall_multiplier') | float %}
           {% endif %}
 
           {# Adjust for temperature #}
           {% if is_state('input_boolean.irrigation_cycle1_adjust_for_temperature', 'on') %}
-            {% set duration = duration * states('input_number.irrigation_temp_multiplier') | float %}
+            {% set duration_secs = duration_secs * states('input_number.irrigation_temp_multiplier') | float %}
           {% endif %}
-          
-          {% set minimum_duration_in_seconds= states('input_number.irrigation_weather_adjusted_minimum_duration_in_seconds') | float %}
-          {% set maximum_duration_in_minutes= states('input_number.irrigation_weather_adjusted_maximum_duration_in_minutes') | float %}
+
+          {% if is_state('input_boolean.irrigation_cycle1_adjust_for_rainfall', 'on') or
+                is_state('input_boolean.irrigation_cycle1_adjust_for_temperature', 'on') %}
+            {% if duration_secs > max_duration_secs %}
+              {% set duration_secs = max_duration_secs %}
+            {% elif duration_secs < min_duration_secs %}
+              {% set duration_secs = min_duration_secs %}
+            {% endif %}
+          {% endif %}
 
           {% if is_state('input_boolean.irrigation_cycle1_zone3_skip', 'on') %}
             0
-          {% elif (duration * 60) < minimum_duration_in_seconds%}
-            0
-          {% elif duration > maximum_duration_in_minutes%}
-            {{ maximum_duration_in_minutes* 60 }}
           {% else %}
             {% if is_state('input_boolean.irrigation_testing_mode', 'on') %}
-              {{ duration | round() }}
+              {{ (duration_secs / 60) | round() }}
             {% else %}
-              {{ (duration * 60) | round() }}
+              {{ duration_secs | round() }}
             {% endif %}
           {% endif %}
 
       irrigation_cycle1_zone4_actual_duration_in_seconds:
         friendly_name: Cycle 1 Zone 4 Actual Duration In Seconds
         value_template: >
-          {% set duration = states('input_number.irrigation_cycle1_zone4_duration') | float %}
-          
+          {% set duration_secs = states('input_number.irrigation_cycle1_zone4_duration') | float * 60 %}
+          {% set min_duration_secs= states('input_number.irrigation_weather_adjusted_minimum_duration_in_seconds') | float %}
+          {% set max_duration_secs= states('input_number.irrigation_weather_adjusted_maximum_duration_in_minutes') | float * 60 %}
+
           {# Adjust for rainfall #}
           {% if is_state('input_boolean.irrigation_cycle1_adjust_for_rainfall', 'on') %}
-            {% set duration = duration * states('input_number.irrigation_rainfall_multiplier') | float %}
+            {% set duration_secs = duration_secs * states('input_number.irrigation_rainfall_multiplier') | float %}
           {% endif %}
 
           {# Adjust for temperature #}
           {% if is_state('input_boolean.irrigation_cycle1_adjust_for_temperature', 'on') %}
-            {% set duration = duration * states('input_number.irrigation_temp_multiplier') | float %}
+            {% set duration_secs = duration_secs * states('input_number.irrigation_temp_multiplier') | float %}
           {% endif %}
-          
-          {% set minimum_duration_in_seconds= states('input_number.irrigation_weather_adjusted_minimum_duration_in_seconds') | float %}
-          {% set maximum_duration_in_minutes= states('input_number.irrigation_weather_adjusted_maximum_duration_in_minutes') | float %}
+
+          {% if is_state('input_boolean.irrigation_cycle1_adjust_for_rainfall', 'on') or
+                is_state('input_boolean.irrigation_cycle1_adjust_for_temperature', 'on') %}
+            {% if duration_secs > max_duration_secs %}
+              {% set duration_secs = max_duration_secs %}
+            {% elif duration_secs < min_duration_secs %}
+              {% set duration_secs = min_duration_secs %}
+            {% endif %}
+          {% endif %}
 
           {% if is_state('input_boolean.irrigation_cycle1_zone4_skip', 'on') %}
             0
-          {% elif (duration * 60) < minimum_duration_in_seconds%}
-            0
-          {% elif duration > maximum_duration_in_minutes%}
-            {{ maximum_duration_in_minutes* 60 }}
           {% else %}
             {% if is_state('input_boolean.irrigation_testing_mode', 'on') %}
-              {{ duration | round() }}
+              {{ (duration_secs / 60) | round() }}
             {% else %}
-              {{ (duration * 60) | round() }}
+              {{ duration_secs | round() }}
             {% endif %}
           {% endif %}
 
       irrigation_cycle1_zone5_actual_duration_in_seconds:
         friendly_name: Cycle 1 Zone 5 Actual Duration In Seconds
         value_template: >
-          {% set duration = states('input_number.irrigation_cycle1_zone5_duration') | float %}
-          
+          {% set duration_secs = states('input_number.irrigation_cycle1_zone5_duration') | float * 60 %}
+          {% set min_duration_secs= states('input_number.irrigation_weather_adjusted_minimum_duration_in_seconds') | float %}
+          {% set max_duration_secs= states('input_number.irrigation_weather_adjusted_maximum_duration_in_minutes') | float * 60 %}
+
           {# Adjust for rainfall #}
           {% if is_state('input_boolean.irrigation_cycle1_adjust_for_rainfall', 'on') %}
-            {% set duration = duration * states('input_number.irrigation_rainfall_multiplier') | float %}
+            {% set duration_secs = duration_secs * states('input_number.irrigation_rainfall_multiplier') | float %}
           {% endif %}
 
           {# Adjust for temperature #}
           {% if is_state('input_boolean.irrigation_cycle1_adjust_for_temperature', 'on') %}
-            {% set duration = duration * states('input_number.irrigation_temp_multiplier') | float %}
+            {% set duration_secs = duration_secs * states('input_number.irrigation_temp_multiplier') | float %}
           {% endif %}
-          
-          {% set minimum_duration_in_seconds= states('input_number.irrigation_weather_adjusted_minimum_duration_in_seconds') | float %}
-          {% set maximum_duration_in_minutes= states('input_number.irrigation_weather_adjusted_maximum_duration_in_minutes') | float %}
+
+          {% if is_state('input_boolean.irrigation_cycle1_adjust_for_rainfall', 'on') or
+                is_state('input_boolean.irrigation_cycle1_adjust_for_temperature', 'on') %}
+            {% if duration_secs > max_duration_secs %}
+              {% set duration_secs = max_duration_secs %}
+            {% elif duration_secs < min_duration_secs %}
+              {% set duration_secs = min_duration_secs %}
+            {% endif %}
+          {% endif %}
 
           {% if is_state('input_boolean.irrigation_cycle1_zone5_skip', 'on') %}
             0
-          {% elif (duration * 60) < minimum_duration_in_seconds%}
-            0
-          {% elif duration > maximum_duration_in_minutes%}
-            {{ maximum_duration_in_minutes* 60 }}
           {% else %}
             {% if is_state('input_boolean.irrigation_testing_mode', 'on') %}
-              {{ duration | round() }}
+              {{ (duration_secs / 60) | round() }}
             {% else %}
-              {{ (duration * 60) | round() }}
+              {{ duration_secs | round() }}
             {% endif %}
           {% endif %}
 
       irrigation_cycle1_zone6_actual_duration_in_seconds:
         friendly_name: Cycle 1 Zone 6 Actual Duration In Seconds
         value_template: >
-          {% set duration = states('input_number.irrigation_cycle1_zone6_duration') | float %}
-          
+          {% set duration_secs = states('input_number.irrigation_cycle1_zone6_duration') | float * 60 %}
+          {% set min_duration_secs= states('input_number.irrigation_weather_adjusted_minimum_duration_in_seconds') | float %}
+          {% set max_duration_secs= states('input_number.irrigation_weather_adjusted_maximum_duration_in_minutes') | float * 60 %}
+
           {# Adjust for rainfall #}
           {% if is_state('input_boolean.irrigation_cycle1_adjust_for_rainfall', 'on') %}
-            {% set duration = duration * states('input_number.irrigation_rainfall_multiplier') | float %}
+            {% set duration_secs = duration_secs * states('input_number.irrigation_rainfall_multiplier') | float %}
           {% endif %}
 
           {# Adjust for temperature #}
           {% if is_state('input_boolean.irrigation_cycle1_adjust_for_temperature', 'on') %}
-            {% set duration = duration * states('input_number.irrigation_temp_multiplier') | float %}
+            {% set duration_secs = duration_secs * states('input_number.irrigation_temp_multiplier') | float %}
           {% endif %}
-          
-          {% set minimum_duration_in_seconds= states('input_number.irrigation_weather_adjusted_minimum_duration_in_seconds') | float %}
-          {% set maximum_duration_in_minutes= states('input_number.irrigation_weather_adjusted_maximum_duration_in_minutes') | float %}
+
+          {% if is_state('input_boolean.irrigation_cycle1_adjust_for_rainfall', 'on') or
+                is_state('input_boolean.irrigation_cycle1_adjust_for_temperature', 'on') %}
+            {% if duration_secs > max_duration_secs %}
+              {% set duration_secs = max_duration_secs %}
+            {% elif duration_secs < min_duration_secs %}
+              {% set duration_secs = min_duration_secs %}
+            {% endif %}
+          {% endif %}
 
           {% if is_state('input_boolean.irrigation_cycle1_zone6_skip', 'on') %}
             0
-          {% elif (duration * 60) < minimum_duration_in_seconds%}
-            0
-          {% elif duration > maximum_duration_in_minutes%}
-            {{ maximum_duration_in_minutes* 60 }}
           {% else %}
             {% if is_state('input_boolean.irrigation_testing_mode', 'on') %}
-              {{ duration | round() }}
+              {{ (duration_secs / 60) | round() }}
             {% else %}
-              {{ (duration * 60) | round() }}
+              {{ duration_secs | round() }}
             {% endif %}
           {% endif %}
 
       irrigation_cycle1_zone7_actual_duration_in_seconds:
         friendly_name: Cycle 1 Zone 7 Actual Duration In Seconds
         value_template: >
-          {% set duration = states('input_number.irrigation_cycle1_zone7_duration') | float %}
-          
+          {% set duration_secs = states('input_number.irrigation_cycle1_zone7_duration') | float * 60 %}
+          {% set min_duration_secs= states('input_number.irrigation_weather_adjusted_minimum_duration_in_seconds') | float %}
+          {% set max_duration_secs= states('input_number.irrigation_weather_adjusted_maximum_duration_in_minutes') | float * 60 %}
+
           {# Adjust for rainfall #}
           {% if is_state('input_boolean.irrigation_cycle1_adjust_for_rainfall', 'on') %}
-            {% set duration = duration * states('input_number.irrigation_rainfall_multiplier') | float %}
+            {% set duration_secs = duration_secs * states('input_number.irrigation_rainfall_multiplier') | float %}
           {% endif %}
 
           {# Adjust for temperature #}
           {% if is_state('input_boolean.irrigation_cycle1_adjust_for_temperature', 'on') %}
-            {% set duration = duration * states('input_number.irrigation_temp_multiplier') | float %}
+            {% set duration_secs = duration_secs * states('input_number.irrigation_temp_multiplier') | float %}
           {% endif %}
-          
-          {% set minimum_duration_in_seconds= states('input_number.irrigation_weather_adjusted_minimum_duration_in_seconds') | float %}
-          {% set maximum_duration_in_minutes= states('input_number.irrigation_weather_adjusted_maximum_duration_in_minutes') | float %}
+
+          {% if is_state('input_boolean.irrigation_cycle1_adjust_for_rainfall', 'on') or
+                is_state('input_boolean.irrigation_cycle1_adjust_for_temperature', 'on') %}
+            {% if duration_secs > max_duration_secs %}
+              {% set duration_secs = max_duration_secs %}
+            {% elif duration_secs < min_duration_secs %}
+              {% set duration_secs = min_duration_secs %}
+            {% endif %}
+          {% endif %}
 
           {% if is_state('input_boolean.irrigation_cycle1_zone7_skip', 'on') %}
             0
-          {% elif (duration * 60) < minimum_duration_in_seconds%}
-            0
-          {% elif duration > maximum_duration_in_minutes%}
-            {{ maximum_duration_in_minutes* 60 }}
           {% else %}
             {% if is_state('input_boolean.irrigation_testing_mode', 'on') %}
-              {{ duration | round() }}
+              {{ (duration_secs / 60) | round() }}
             {% else %}
-              {{ (duration * 60) | round() }}
+              {{ duration_secs | round() }}
             {% endif %}
           {% endif %}
 
       irrigation_cycle1_zone8_actual_duration_in_seconds:
         friendly_name: Cycle 1 Zone 8 Actual Duration In Seconds
         value_template: >
-          {% set duration = states('input_number.irrigation_cycle1_zone8_duration') | float %}
-          
+          {% set duration_secs = states('input_number.irrigation_cycle1_zone8_duration') | float * 60 %}
+          {% set min_duration_secs= states('input_number.irrigation_weather_adjusted_minimum_duration_in_seconds') | float %}
+          {% set max_duration_secs= states('input_number.irrigation_weather_adjusted_maximum_duration_in_minutes') | float * 60 %}
+
           {# Adjust for rainfall #}
           {% if is_state('input_boolean.irrigation_cycle1_adjust_for_rainfall', 'on') %}
-            {% set duration = duration * states('input_number.irrigation_rainfall_multiplier') | float %}
+            {% set duration_secs = duration_secs * states('input_number.irrigation_rainfall_multiplier') | float %}
           {% endif %}
 
           {# Adjust for temperature #}
           {% if is_state('input_boolean.irrigation_cycle1_adjust_for_temperature', 'on') %}
-            {% set duration = duration * states('input_number.irrigation_temp_multiplier') | float %}
+            {% set duration_secs = duration_secs * states('input_number.irrigation_temp_multiplier') | float %}
           {% endif %}
-          
-          {% set minimum_duration_in_seconds= states('input_number.irrigation_weather_adjusted_minimum_duration_in_seconds') | float %}
-          {% set maximum_duration_in_minutes= states('input_number.irrigation_weather_adjusted_maximum_duration_in_minutes') | float %}
+
+          {% if is_state('input_boolean.irrigation_cycle1_adjust_for_rainfall', 'on') or
+                is_state('input_boolean.irrigation_cycle1_adjust_for_temperature', 'on') %}
+            {% if duration_secs > max_duration_secs %}
+              {% set duration_secs = max_duration_secs %}
+            {% elif duration_secs < min_duration_secs %}
+              {% set duration_secs = min_duration_secs %}
+            {% endif %}
+          {% endif %}
 
           {% if is_state('input_boolean.irrigation_cycle1_zone8_skip', 'on') %}
             0
-          {% elif (duration * 60) < minimum_duration_in_seconds%}
-            0
-          {% elif duration > maximum_duration_in_minutes%}
-            {{ maximum_duration_in_minutes* 60 }}
           {% else %}
             {% if is_state('input_boolean.irrigation_testing_mode', 'on') %}
-              {{ duration | round() }}
+              {{ (duration_secs / 60) | round() }}
             {% else %}
-              {{ (duration * 60) | round() }}
+              {{ duration_secs | round() }}
             {% endif %}
           {% endif %}
 
