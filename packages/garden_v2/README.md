@@ -80,6 +80,14 @@ __Weather sensors:__ I use SmartWeather and DarkSky weather sensors to provide t
 Smart Weather is available as a custom component (https://github.com/briis/smartweather) but I simply use REST sensors to receive the data.
 DarkSky will I believe become unavailable in 2021 as Apple have recently bought it.
 
+------------
+
+__Finally:__ As expected, I am getting some feedback suggesting that the initial setup of this package is not entirely straight forward. This relates mostly to getting the UI to display correctly. I will at some point try and collate all the issues and where possible include code to get around them or at the very least document how to avoid and work around them. In the meantime I will add here the feedback I receive (verbatim).
+
+- the file `section_settings_general.yaml` needs `sensor.garden_irrigation_controller_wifi_signal` for the correct settings display
+- the file `item_cycle_schedule_title` needs `sensor.dark_sky_current_minutely_summary` for show label, I used `sensor.dark_sky_hourly_summary`.
+- in the “switch zone name” you have to insert the name with “switch”, for example “switch.valve1”
+
 --------------
 
 __Disclaimer__ - This has __NOT__ been extensivley tested. In fact as of now it has only been used on my desk! Treat this as a preview but feel free of course to use, adapt or change it in any way you see fit. But if you do find errors I'd be interested to know so I can look at it although no promises can be made regarding how or when I will get to fix anything. Likewise if you come up with any improvements also please tell me!
