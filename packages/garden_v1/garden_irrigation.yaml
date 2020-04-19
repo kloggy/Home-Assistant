@@ -456,12 +456,12 @@ script:
           entity_id: timer.cycle{{ cycle }}_zone_duration
           duration: >
             {% if is_state('input_boolean.cycle' + cycle + '_use_weather_adjustment', 'on') %}
-              {% set adj_duration = states('input_number.adjusted_cycle1_zone1_duration') | float %}
+              {% set adj_duration = states('input_number.adjusted_cycle' ~ cycle ~ '_zone' ~ zone ~ '_duration') | float %}
               {% set mins = (adj_duration // 1) | round(0, floor) %}
               {% set secs = ((adj_duration - mins) * 60) | round %}
               00:{{ '%02i' | format(mins) }}:{{ '%02i' | format(secs) }}
             {% else %}
-              {% set duration = states('input_number.cycle1_zone1_duration') | float %}
+              {% set duration = states('input_number.cycle' ~ cycle ~ '_zone' ~ zone ~ '_duration') | float %}
               {% set mins = (duration // 1) | round(0, floor) %}
               {% set secs = ((duration - mins) * 60) | round %}
               00:{{ '%02i' | format(mins) }}:{{ '%02i' | format(secs) }}
