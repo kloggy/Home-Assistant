@@ -5,7 +5,7 @@ This repository should be considered as an archive. __It may be deleted at some 
 
 __Version 1__ is now at: https://github.com/kloggy/HA-Irrigation-Version1
 
-That contains the very latest version including all changes I have made and is currently the version I use (until version 2 is fully implemented).
+That contains the very latest code including all changes I have made and is currently the version I use (until version 2 is fully implemented).
 
 The Version 1 in this repository __will not be updated__ 
 
