@@ -1,9 +1,7 @@
 # IMPORTANT #
 I have now created seperate repositories for versions 1 and 2 of my Garden Irrigation System.
 
-The Version 1 in this repository __will not be updated__ 
-
-The Version 2 in this repository __will not be updated__ 
+Neither Version in this repository __will be updated__ 
 
 This repository should be considered as an archive. __It may be deleted at some point in the future.__
 
